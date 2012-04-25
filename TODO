@@ -1,0 +1,54 @@
+- It seems like it's X or Y, not X and Y, for example; make sure
+  that's actually what's happening.   The point here is that if either
+  thing matches, we have a match.
+
+- There could be a problem where we have two ors combined by a
+  nearby, and we match both ends of both ors, but the nearby clause
+  would have worked the other way than the way the program naturally
+  did it; make sure this doesn't happen.
+
+- The match highligher seems to have developed a new tendency to
+  highlight way too much text.   Figure out why.
+
+- Write a manual page.
+
+- Figure out why the next match code menu item is getting highlighted
+  only once, at the end of the whole search, and why it's
+  unhighlighted the first time it gets used, and finally why asking
+  for the next match doesn't actually go to another match.
+
+- Figure out why if we don't sleep for ten seconds to let the text view
+  stabilize, it crashes when we try to seek to the matching text.
+
+- Better yet, stop using the textview widget, which is incredibly
+  slow and requires us to convert the whole file into an attributed
+  string in order to display it, which is probably why it's incredibly
+  slow.
+
+- Add a way to allow the user to just type and have completion done on
+  the files to match, so that you can do the same search GMR is doing
+  without navigating a bunch of clumsy menus.   Make this a preference,
+  since some people don't think the menus are clumsy and are good at
+  navigating them.
+
+- Make the UI swap between setup and search, so we can use less screen
+  real estate.
+
+- Linux (GTK+?) GUI.
+
+- Windows GUI.
+
+- If we replace the TextView widget, try to make it so the code for that
+  can also be used in Windows and Linux.
+
+- At the user's option, transliterate the text into Tibetan.   This is a
+  nice-to-have, but really not important at all.   Unless you want to
+  collect heaping wozages of merit with Christie-hla.
+
+- When cutting and pasting out of gofer, allow the user to set a preference
+  that says that the name of the file gets cut out as well.
+
+- Fix the problem where when the later of two matches that are nearby
+  crosses a line, we use the line the match *starts* on instead of the
+  line the match *ends* on, and therefore maybe don't print the whole
+  match.

@@ -1,0 +1,42 @@
+Back in the mid-eighties, a company called Microlytics released a
+product called GOFER for MS-DOS.  Gofer was a file search tool that
+would rapidly search a directory tree for files containing a match to
+an expression containing eight search terms, each of which was a
+literal string, and each of which could be combined with the others
+using "or" and "near".  So you could say "find files matching "a" or
+"b" or "c" or " d " within 10 lines of "e" or "f g" or "h i j" or "k",
+for example.  Unfortunately, Microlytics went out of business and
+never released a version of GOFER for DOS or Linux.
+
+There are a lot of search tools available nowadays, but they're mostly
+extremely complicated, like xapian, or line-oriented, like grep.  Line
+oriented search tools are virtually useless for searching text, and
+tools like xapian are just too hard to get working for regular folks.
+
+So this project is intended to be a functional replacement for GOFER.
+Since the trademark has been let lapse, I'm using the same name so
+that old GOFER aficianados will be able to find this, but if the
+original authors are bugged by this, please contact me and I will pick
+a new name - this is intended as a tribute, not as claim jumping!
+GOFER is still in active use by the Asian Classics Input project; the
+reason for writing this new version is that a version of GOFER running
+in DOS is very hard to use on a Linux or Mac system, and it would be
+really nice to be able to cut and paste out of a GOFER window.
+
+Right now I've gotten most of the code written for a command line
+version of the software.  No regexp support yet, because that's not
+really what GOFER did, but I will be adding that.  I'd also like to
+have simple GUIs for GTK, KDE, Aqua and Windows; at this point there
+is the beginning of a GUI for Aqua, but the command line is still
+the easiest way to do it.
+
+Briefly, to use the command line, type "gofer dir1 ... dirN", where dir1
+through dirN are names of directories to search, and you don't type "..."
+on the command line.   You will get a prompt, "> ".   At the prompt,
+you type in a search expression.   WHen you are done with your expression,
+type "end" on a line by itself.
+
+The expression can be a simple string, "look for me!!!", or a combination -
+usually "look for me" or "look for the other me".   You can group with
+parentheses.   You can search for a string nearby another string:
+"look for me" within 3 lines of "and you will find me."
