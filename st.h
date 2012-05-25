@@ -95,9 +95,9 @@ typedef enum {
 
 /* Comparison types. */
 typedef enum {
-  match_ignores_spaces,
-  match_exactly,
-  match_ignores_spaces_and_case
+  match_ignores_spaces = 1,
+  match_exactly = 2,
+  match_ignores_spaces_and_case = 3
 } st_match_type_t;
 
 /* Search expression node.   Search expression nodes combine search terms,

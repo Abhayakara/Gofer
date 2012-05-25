@@ -163,18 +163,22 @@ compute_near(st_expr_t *expr,
 
   while (lix < linc->count && rix < rinc->count)
     {
-      int diff;
+      int diff, cdiff;
      
+      /* Diff in char positions. */
+      cdiff = linc->data[lix] - rinc->data[rix];
+
+      /* Diff in line positions. */
       if (expr->type == ste_near)
-	/* Diff in char positions. */
-	diff = linc->data[lix] - rinc->data[rix];
+	diff = cdiff;
       else
-	/* Diff in line positions. */
 	diff = linc->data[lix + 2] - rinc->data[rix + 2];
 
       /* We want the absolute difference. */
       if (diff < 0)
 	diff = -diff;
+      if (cdiff < 0)
+	cdiff = -cdiff;
 
       /* If the difference in character position between the two
        * positions is less than the specified limit, the two positions
@@ -182,7 +186,7 @@ compute_near(st_expr_t *expr,
        * Special case: if the two matches start in the same place, don't
        * consider them nearby, because it's really the same match.
        */
-      if (diff <= expr->n && diff != 0)
+      if (diff <= expr->n && cdiff != 0)
 	{
 	  tmp = malloc(sizeof (combineset_t));
 	  if (!tmp)

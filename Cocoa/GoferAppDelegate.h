@@ -7,8 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "filelist.h"
 
-@interface GoferAppDelegate : NSObject <NSApplicationDelegate, NSTableViewDataSource> {
+@interface GoferAppDelegate : NSObject <NSApplicationDelegate, NSTableViewDataSource, NSTabViewDelegate> {
 @private
   NSWindow *window;
 
@@ -21,6 +22,7 @@
   NSTextField *inputBox6;
   NSTextField *inputBox7;
   
+  NSPopUpButton *distancePopUp;
   NSTextField *distanceBox;
   NSMenu *distanceMenu;
   NSMenuItem *orMenuItem;
@@ -28,6 +30,7 @@
   NSMenuItem *notMenuItem;
   NSMenuItem *distanceMenuItem;
   NSMenu *precisionMenu;
+  NSPopUpButton *precisionPopUp;
   NSMenuItem *ignoreSpaceCap;
   NSMenuItem *ignoreSpace;
   NSMenuItem *ignoreNothing;
@@ -39,7 +42,40 @@
   
   NSMutableArray *dirNames;
   NSMutableArray *dirsChecked;
+
+  NSTabView *tabView;
+  NSButton *nextMatchButton;
+  NSButton *nextFileMatchButton;
+  NSButton *prevMatchButton;
+  NSButton *prevFileMatchButton;
+  NSButton *stopButton;
+  NSButton *findButton;
+  NSMenuItem *findMenuItem;
+  NSMenuItem *findNextMenuItem;
+  NSMenuItem *findPreviousMenuItem;
+
+  NSTextView *fileContentView;
+  NSTextField *viewFile;
+  NSTextField *statusMessageField;
+
+  BOOL keepSearching;
+  BOOL firstMatch;
+  filelist_t *files;
+  BOOL haveContents;
+
+  char *curFileName;
+
+  int filesMatched;
+  int matchCount;
 }
+
+@property filelist_t *files;
+@property BOOL keepSearching;
+@property BOOL firstMatch;
+@property BOOL haveContents;
+
+@property int filesMatched;
+@property int matchCount;
 
 @property (assign) IBOutlet NSWindow *window;
 
@@ -54,14 +90,16 @@
 
 @property(assign) IBOutlet NSTextField *distanceBox;
 
+@property(assign) IBOutlet NSPopUpButton *distancePopUp;
 @property(assign) IBOutlet NSMenu *distanceMenu;
 @property(assign) IBOutlet NSMenuItem *orMenuItem;
 @property(assign) IBOutlet NSMenuItem *distanceMenuItem;
 @property(assign) IBOutlet NSMenuItem *andMenuItem;
 @property(assign) IBOutlet NSMenuItem *notMenuItem;
 
-
+@property(assign) IBOutlet NSTabView *tabView;
 @property(assign) IBOutlet NSMenu *precisionMenu;
+@property(assign) IBOutlet NSPopUpButton *precisionPopUp;
 @property(assign) IBOutlet NSMenuItem *ignoreSpaceCap;
 @property(assign) IBOutlet NSMenuItem *ignoreSpace;
 @property(assign) IBOutlet NSMenuItem *ignoreNothing;
@@ -70,14 +108,57 @@
 
 @property(assign) IBOutlet NSTableView *dirTable;
 
+@property(assign) IBOutlet NSButton *nextMatchButton;
+@property(assign) IBOutlet NSButton *nextFileMatchButton;
+@property(assign) IBOutlet NSButton *prevMatchButton;
+@property(assign) IBOutlet NSButton *prevFileMatchButton;
+@property(assign) IBOutlet NSButton *stopButton;
+@property(assign) IBOutlet NSButton *findButton;
+
+@property(assign) IBOutlet NSMenuItem *findMenuItem;
+@property(assign) IBOutlet NSMenuItem *findNextMenuItem;
+@property(assign) IBOutlet NSMenuItem *findPreviousMenuItem;
+
+@property(assign) IBOutlet NSTextView *fileContentView;
+@property(assign) IBOutlet NSTextField *viewFile;
+@property(assign) IBOutlet NSTextField *statusMessageField;
+
 - (IBAction)findClicked:(id)sender;
 - (IBAction)saveClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;
 - (IBAction)removeClicked:(id)sender;
 - (IBAction)duplicateClicked:(id)sender;
+- (IBAction)stopClicked:(id)sender;
 - (IBAction)textAction:(id)sender;
 - (IBAction)distanceAction:(id)sender;
 
+- (IBAction)nextMatch: (id)sender;
+- (IBAction)nextFileMatch: (id)sender;
+- (IBAction)prevMatch: (id)sender;
+- (IBAction)prevFileMatch: (id)sender;
+
+- (IBAction)selectionToClipBoardWithInfo: (id)sender;
+
+- (void)zapMatchView;
+- (void)showCurMatch;
+- (void)seekMatch;
+- (BOOL)canNext;
+- (bool)canNextFile;
+- (bool)canPrevFile;
+- (void)nextMatch;
+- (void)nextFileMatch;
+- (void)prevMatch;
+- (void)prevFileMatch;
+- (void)unShowMatch;
+
+- (void)setMatchButtonStates;
+- (void)setNextMatchEnabled: (BOOL)state;
+- (void)setPrevMatchEnabled: (BOOL)state;
+- (void)setNextFileMatchEnabled: (BOOL)state;
+- (void)setPrevFileMatchEnabled: (BOOL)state;
+- (void)setStatusMessage: (NSString *)message;
+
+- (void)writeDirDefaults;
 @end
 
 /* Local Variables:  */

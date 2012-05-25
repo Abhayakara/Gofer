@@ -7,16 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF2B5D951370D3CC00122E43 /* combine.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D881370D3CC00122E43 /* combine.c */; };
+		DF2B5D961370D3CC00122E43 /* errwarn.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D891370D3CC00122E43 /* errwarn.c */; };
+		DF2B5D971370D3CC00122E43 /* expr.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D8A1370D3CC00122E43 /* expr.c */; };
+		DF2B5D981370D3CC00122E43 /* filelist.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D8B1370D3CC00122E43 /* filelist.c */; };
+		DF2B5D991370D3CC00122E43 /* lex.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D8D1370D3CC00122E43 /* lex.c */; };
+		DF2B5D9B1370D3CC00122E43 /* near.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D901370D3CC00122E43 /* near.c */; };
+		DF2B5D9D1370D3CC00122E43 /* searchfile.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D921370D3CC00122E43 /* searchfile.c */; };
+		DF2B5D9E1370D3CC00122E43 /* tree.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D941370D3CC00122E43 /* tree.c */; };
+		DF4E920113AD2A1D007F3E0F /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DF4E91F613AD2A1D007F3E0F /* Credits.rtf */; };
+		DF4E920213AD2A1D007F3E0F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF4E91F813AD2A1D007F3E0F /* InfoPlist.strings */; };
+		DF4E920313AD2A1D007F3E0F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF4E91FA13AD2A1D007F3E0F /* MainMenu.xib */; };
+		DF4E920513AD2A1D007F3E0F /* GoferAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */; };
+		DF4E920613AD2A1D007F3E0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4E920013AD2A1D007F3E0F /* main.m */; };
 		DF7553D5136DE8BB00DDF1FE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */; };
-		DF7553DF136DE8BB00DDF1FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF7553DD136DE8BB00DDF1FE /* InfoPlist.strings */; };
-		DF7553E2136DE8BB00DDF1FE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553E1136DE8BB00DDF1FE /* main.m */; };
-		DF7553E5136DE8BB00DDF1FE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DF7553E3136DE8BB00DDF1FE /* Credits.rtf */; };
-		DF7553E8136DE8BB00DDF1FE /* GoferAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553E7136DE8BB00DDF1FE /* GoferAppDelegate.m */; };
-		DF7553EB136DE8BB00DDF1FE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF7553E9136DE8BB00DDF1FE /* MainMenu.xib */; };
 		DF7553F2136DE8BB00DDF1FE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */; };
 		DF7553FA136DE8BB00DDF1FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF7553F8136DE8BB00DDF1FE /* InfoPlist.strings */; };
 		DF7553FD136DE8BB00DDF1FE /* GoferTests.h in Resources */ = {isa = PBXBuildFile; fileRef = DF7553FC136DE8BB00DDF1FE /* GoferTests.h */; };
 		DF7553FF136DE8BB00DDF1FE /* GoferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553FE136DE8BB00DDF1FE /* GoferTests.m */; };
+		DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */ = {isa = PBXBuildFile; fileRef = DF755408136DEA7000DDF1FE /* Gofer.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,25 +39,37 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF2B5D881370D3CC00122E43 /* combine.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = combine.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D891370D3CC00122E43 /* errwarn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = errwarn.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D8A1370D3CC00122E43 /* expr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = expr.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D8B1370D3CC00122E43 /* filelist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = filelist.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D8C1370D3CC00122E43 /* filelist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filelist.h; sourceTree = SOURCE_ROOT; };
+		DF2B5D8D1370D3CC00122E43 /* lex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D8E1370D3CC00122E43 /* lex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lex.h; sourceTree = SOURCE_ROOT; };
+		DF2B5D901370D3CC00122E43 /* near.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = near.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D921370D3CC00122E43 /* searchfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = searchfile.c; sourceTree = SOURCE_ROOT; };
+		DF2B5D931370D3CC00122E43 /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = SOURCE_ROOT; };
+		DF2B5D941370D3CC00122E43 /* tree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tree.c; sourceTree = SOURCE_ROOT; };
+		DF4E91F713AD2A1D007F3E0F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		DF4E91F913AD2A1D007F3E0F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DF4E91FB13AD2A1D007F3E0F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		DF4E91FC13AD2A1D007F3E0F /* Gofer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gofer-Info.plist"; sourceTree = "<group>"; };
+		DF4E91FD13AD2A1D007F3E0F /* Gofer-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Gofer-Prefix.pch"; sourceTree = "<group>"; };
+		DF4E91FE13AD2A1D007F3E0F /* GoferAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoferAppDelegate.h; sourceTree = "<group>"; };
+		DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoferAppDelegate.m; sourceTree = "<group>"; };
+		DF4E920013AD2A1D007F3E0F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DF7553D0136DE8BB00DDF1FE /* Gofer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gofer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		DF7553D7136DE8BB00DDF1FE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		DF7553D8136DE8BB00DDF1FE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		DF7553D9136DE8BB00DDF1FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		DF7553DC136DE8BB00DDF1FE /* Gofer-Info.plist */ = {isa = PBXFileReference; path = "Gofer-Info.plist"; sourceTree = "<group>"; };
-		DF7553DE136DE8BB00DDF1FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		DF7553E0136DE8BB00DDF1FE /* Gofer-Prefix.pch */ = {isa = PBXFileReference; path = "Gofer-Prefix.pch"; sourceTree = "<group>"; };
-		DF7553E1136DE8BB00DDF1FE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		DF7553E4136DE8BB00DDF1FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		DF7553E6136DE8BB00DDF1FE /* GoferAppDelegate.h */ = {isa = PBXFileReference; path = GoferAppDelegate.h; sourceTree = "<group>"; };
-		DF7553E7136DE8BB00DDF1FE /* GoferAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoferAppDelegate.m; sourceTree = "<group>"; };
-		DF7553EA136DE8BB00DDF1FE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		DF7553F1136DE8BB00DDF1FE /* GoferTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoferTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF7553F7136DE8BB00DDF1FE /* GoferTests-Info.plist */ = {isa = PBXFileReference; path = "GoferTests-Info.plist"; sourceTree = "<group>"; };
+		DF7553F7136DE8BB00DDF1FE /* GoferTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoferTests-Info.plist"; sourceTree = "<group>"; };
 		DF7553F9136DE8BB00DDF1FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		DF7553FB136DE8BB00DDF1FE /* GoferTests-Prefix.pch */ = {isa = PBXFileReference; path = "GoferTests-Prefix.pch"; sourceTree = "<group>"; };
+		DF7553FB136DE8BB00DDF1FE /* GoferTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoferTests-Prefix.pch"; sourceTree = "<group>"; };
 		DF7553FC136DE8BB00DDF1FE /* GoferTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoferTests.h; sourceTree = "<group>"; };
 		DF7553FE136DE8BB00DDF1FE /* GoferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoferTests.m; sourceTree = "<group>"; };
+		DF755408136DEA7000DDF1FE /* Gofer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Gofer.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,9 +92,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DF2B5CA71370D34900122E43 /* libgofer */ = {
+			isa = PBXGroup;
+			children = (
+				DF2B5D881370D3CC00122E43 /* combine.c */,
+				DF2B5D891370D3CC00122E43 /* errwarn.c */,
+				DF2B5D8A1370D3CC00122E43 /* expr.c */,
+				DF2B5D8B1370D3CC00122E43 /* filelist.c */,
+				DF2B5D8C1370D3CC00122E43 /* filelist.h */,
+				DF2B5D8D1370D3CC00122E43 /* lex.c */,
+				DF2B5D8E1370D3CC00122E43 /* lex.h */,
+				DF2B5D901370D3CC00122E43 /* near.c */,
+				DF2B5D921370D3CC00122E43 /* searchfile.c */,
+				DF2B5D931370D3CC00122E43 /* st.h */,
+				DF2B5D941370D3CC00122E43 /* tree.c */,
+			);
+			name = libgofer;
+			sourceTree = "<group>";
+		};
+		DF4E91F513AD2A1D007F3E0F /* Cocoa */ = {
+			isa = PBXGroup;
+			children = (
+				DF4E91F613AD2A1D007F3E0F /* Credits.rtf */,
+				DF4E91F813AD2A1D007F3E0F /* InfoPlist.strings */,
+				DF4E91FA13AD2A1D007F3E0F /* MainMenu.xib */,
+				DF4E91FC13AD2A1D007F3E0F /* Gofer-Info.plist */,
+				DF4E91FD13AD2A1D007F3E0F /* Gofer-Prefix.pch */,
+				DF4E91FE13AD2A1D007F3E0F /* GoferAppDelegate.h */,
+				DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */,
+				DF4E920013AD2A1D007F3E0F /* main.m */,
+			);
+			path = Cocoa;
+			sourceTree = SOURCE_ROOT;
+		};
 		DF7553C5136DE8BA00DDF1FE = {
 			isa = PBXGroup;
 			children = (
+				DF755408136DEA7000DDF1FE /* Gofer.icns */,
 				DF7553DA136DE8BB00DDF1FE /* Gofer */,
 				DF7553F5136DE8BB00DDF1FE /* GoferTests */,
 				DF7553D3136DE8BB00DDF1FE /* Frameworks */,
@@ -112,24 +167,10 @@
 		DF7553DA136DE8BB00DDF1FE /* Gofer */ = {
 			isa = PBXGroup;
 			children = (
-				DF7553E6136DE8BB00DDF1FE /* GoferAppDelegate.h */,
-				DF7553E7136DE8BB00DDF1FE /* GoferAppDelegate.m */,
-				DF7553E9136DE8BB00DDF1FE /* MainMenu.xib */,
-				DF7553DB136DE8BB00DDF1FE /* Supporting Files */,
+				DF4E91F513AD2A1D007F3E0F /* Cocoa */,
+				DF2B5CA71370D34900122E43 /* libgofer */,
 			);
 			path = Gofer;
-			sourceTree = "<group>";
-		};
-		DF7553DB136DE8BB00DDF1FE /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				DF7553DC136DE8BB00DDF1FE /* Gofer-Info.plist */,
-				DF7553DD136DE8BB00DDF1FE /* InfoPlist.strings */,
-				DF7553E0136DE8BB00DDF1FE /* Gofer-Prefix.pch */,
-				DF7553E1136DE8BB00DDF1FE /* main.m */,
-				DF7553E3136DE8BB00DDF1FE /* Credits.rtf */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		DF7553F5136DE8BB00DDF1FE /* GoferTests */ = {
@@ -197,6 +238,7 @@
 		DF7553C7136DE8BA00DDF1FE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Diamond Mountain University";
 			};
 			buildConfigurationList = DF7553CA136DE8BA00DDF1FE /* Build configuration list for PBXProject "Gofer" */;
@@ -222,9 +264,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF7553DF136DE8BB00DDF1FE /* InfoPlist.strings in Resources */,
-				DF7553E5136DE8BB00DDF1FE /* Credits.rtf in Resources */,
-				DF7553EB136DE8BB00DDF1FE /* MainMenu.xib in Resources */,
+				DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */,
+				DF4E920113AD2A1D007F3E0F /* Credits.rtf in Resources */,
+				DF4E920213AD2A1D007F3E0F /* InfoPlist.strings in Resources */,
+				DF4E920313AD2A1D007F3E0F /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,8 +303,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF7553E2136DE8BB00DDF1FE /* main.m in Sources */,
-				DF7553E8136DE8BB00DDF1FE /* GoferAppDelegate.m in Sources */,
+				DF2B5D951370D3CC00122E43 /* combine.c in Sources */,
+				DF2B5D961370D3CC00122E43 /* errwarn.c in Sources */,
+				DF2B5D971370D3CC00122E43 /* expr.c in Sources */,
+				DF2B5D981370D3CC00122E43 /* filelist.c in Sources */,
+				DF2B5D991370D3CC00122E43 /* lex.c in Sources */,
+				DF2B5D9B1370D3CC00122E43 /* near.c in Sources */,
+				DF2B5D9D1370D3CC00122E43 /* searchfile.c in Sources */,
+				DF2B5D9E1370D3CC00122E43 /* tree.c in Sources */,
+				DF4E920513AD2A1D007F3E0F /* GoferAppDelegate.m in Sources */,
+				DF4E920613AD2A1D007F3E0F /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,26 +335,26 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		DF7553DD136DE8BB00DDF1FE /* InfoPlist.strings */ = {
+		DF4E91F613AD2A1D007F3E0F /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DF7553DE136DE8BB00DDF1FE /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		DF7553E3136DE8BB00DDF1FE /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DF7553E4136DE8BB00DDF1FE /* en */,
+				DF4E91F713AD2A1D007F3E0F /* en */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		DF7553E9136DE8BB00DDF1FE /* MainMenu.xib */ = {
+		DF4E91F813AD2A1D007F3E0F /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DF7553EA136DE8BB00DDF1FE /* en */,
+				DF4E91F913AD2A1D007F3E0F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DF4E91FA13AD2A1D007F3E0F /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DF4E91FB13AD2A1D007F3E0F /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -323,7 +374,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -331,9 +384,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
@@ -341,13 +394,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
@@ -359,8 +415,12 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Gofer/Gofer-Prefix.pch";
-				INFOPLIST_FILE = "Gofer/Gofer-Info.plist";
+				GCC_PREFIX_HEADER = "Cocoa/Gofer-Prefix.pch";
+				INFOPLIST_FILE = "Cocoa/Gofer-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -374,8 +434,12 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Gofer/Gofer-Prefix.pch";
-				INFOPLIST_FILE = "Gofer/Gofer-Info.plist";
+				GCC_PREFIX_HEADER = "Cocoa/Gofer-Prefix.pch";
+				INFOPLIST_FILE = "Cocoa/Gofer-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -444,6 +508,7 @@
 				DF755404136DE8BB00DDF1FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DF755405136DE8BB00DDF1FE /* Build configuration list for PBXNativeTarget "GoferTests" */ = {
 			isa = XCConfigurationList;
@@ -452,6 +517,7 @@
 				DF755407136DE8BB00DDF1FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

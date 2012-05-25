@@ -67,6 +67,8 @@ new_entry(filelist_t *dest,
       fr->reducename = strrchr(fr->filename, '/');
       if (!fr->reducename)
 	fr->reducename = fr->filename;
+      else
+	fr->reducename++;
       fr->contents = contents;
       fr->content_length = content_length;
       if (dest->nfiles == dest->maxfiles)
