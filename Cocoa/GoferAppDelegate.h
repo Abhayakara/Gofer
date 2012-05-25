@@ -142,13 +142,6 @@
 - (void)zapMatchView;
 - (void)showCurMatch;
 - (void)seekMatch;
-- (BOOL)canNext;
-- (bool)canNextFile;
-- (bool)canPrevFile;
-- (void)nextMatch;
-- (void)nextFileMatch;
-- (void)prevMatch;
-- (void)prevFileMatch;
 - (void)unShowMatch;
 
 - (void)setMatchButtonStates;
