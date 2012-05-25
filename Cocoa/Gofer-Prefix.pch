@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Gofer' target in the 'Gofer' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
