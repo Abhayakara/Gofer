@@ -574,6 +574,7 @@ distanceAction: (id)sender
             [dirsChecked addObject: obj];
         }
     }
+  [self writeDirDefaults];
 }
             
 - (void)zapMatchView
