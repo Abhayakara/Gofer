@@ -44,6 +44,9 @@
   NSMutableArray *dirsChecked;
 
   NSTabView *tabView;
+  NSTabViewItem *searchSettingTab;
+  NSTabViewItem *savedSearchTab;
+  NSTabViewItem *searchResultsTab;
   NSButton *nextMatchButton;
   NSButton *nextFileMatchButton;
   NSButton *prevMatchButton;
@@ -98,6 +101,7 @@
 @property(assign) IBOutlet NSMenuItem *notMenuItem;
 
 @property(assign) IBOutlet NSTabView *tabView;
+
 @property(assign) IBOutlet NSMenu *precisionMenu;
 @property(assign) IBOutlet NSPopUpButton *precisionPopUp;
 @property(assign) IBOutlet NSMenuItem *ignoreSpaceCap;
@@ -123,6 +127,8 @@
 @property(assign) IBOutlet NSTextField *viewFile;
 @property(assign) IBOutlet NSTextField *statusMessageField;
 
+- (void)constrainUIToDisplay;
+- (IBAction)newClicked:(id)sender;
 - (IBAction)findClicked:(id)sender;
 - (IBAction)saveClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;

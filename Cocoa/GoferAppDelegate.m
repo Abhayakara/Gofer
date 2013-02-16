@@ -66,6 +66,28 @@
 static NSMutableArray *uis;
 BOOL uis_setup = NO;
 
+static void reconf(CGDirectDisplayID display,
+		   CGDisplayChangeSummaryFlags flags,
+		   void *userInfo)
+{
+  printf("display %x flags %x\n", display, flags);
+  if (!uis_setup)
+    {
+      printf("not ready to resize yet\n");
+      return;
+    }
+  dispatch_async(dispatch_get_main_queue(), ^{
+      printf("in async dispatch.\n");
+      printf("%lu uis\n", [uis count]);
+      [uis enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
+	{
+	  printf("calling constrainUIToDisplay\n");
+	  GoferAppDelegate *me = obj;
+	  [me constrainUIToDisplay];
+	}];
+    });
+}
+
 void
 one_element(void *obj, const char *fname,
 	    char *contents, int content_length,
@@ -115,6 +137,40 @@ one_file(void *obj, const char *filename)
       [me setStatusMessage: sm];
     });
   return me.keepSearching;
+}
+
+- (void)constrainUIToDisplay
+{
+  NSArray *screenArray = [NSScreen screens];
+  NSScreen *myScreen = [window screen];
+  NSEnumerator *enumerator = [screenArray objectEnumerator];
+  NSScreen *screen;
+  
+  while (screen = [enumerator nextObject])
+    {
+      NSRect screenRect = [screen visibleFrame];
+      NSString *mString = ((myScreen == screen) ? @"Mine" : @"not mine");
+      
+      NSLog(@"Screen #%d (%@) Frame: %@", index, mString, NSStringFromRect(screenRect));
+      if (myScreen == screen)
+	{
+	  NSRect frameRect = [window frame];
+	  int modified = 0;
+	  if (frameRect.size.width > screenRect.size.width)
+	    {
+	      modified = 1;
+	      frameRect.size.width = screenRect.size.width;
+	    }
+	  frameRect.size.height = screenRect.size.height;
+	  if (modified)
+	    {
+	      frameRect.origin.x = 0;
+	    }
+	  frameRect.origin.y = 0;
+	  [window setFrame: frameRect display: YES animate: YES];
+	}
+    }
+  
 }
 
 - (st_expr_t *)genEquation
@@ -272,6 +328,7 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
     {
       uis = [NSMutableArray new];
       uis_setup = YES;
+      [uis addObject: self];
     }
 
   files = new_filelist();
@@ -279,7 +336,18 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
   curFileName = 0;
   firstMatch = YES;
   keepSearching = YES;
+  [tabView setDelegate: self];
+  NSArray *items = [tabView tabViewItems];
+  searchSettingTab = [items objectAtIndex: 0];
+  savedSearchTab = [items objectAtIndex: 1];
+  searchResultsTab = [items objectAtIndex: 2];
   [tabView selectTabViewItemAtIndex: 0];
+  [window makeFirstResponder: inputBox0];
+
+  CGError foo = CGDisplayRegisterReconfigurationCallback(reconf, 0);
+  if (foo != kCGErrorSuccess)
+    printf("Error registering display reconfiguration callback: %d\n", foo);
+  [self constrainUIToDisplay];
 }
 
 - (IBAction)
@@ -296,6 +364,9 @@ findClicked: (id)sender
     }
   filesMatched = 0;
   matchCount = 0;
+  curFileName = 0;
+  firstMatch = YES;
+  keepSearching = YES;
 
   /* We need something to search before we can do a search. */
   if ([dirNames count] == 0)
@@ -324,6 +395,8 @@ findClicked: (id)sender
   [findButton setEnabled: NO];
   [findMenuItem setEnabled: NO];
   [stopButton setEnabled: YES];
+
+  keepSearching = YES;
 
   defQ = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
@@ -359,7 +432,7 @@ findClicked: (id)sender
 			       0, searchExactitude))
 		break;
 	    }
-	  if (!keepSearching)
+	  if (keepSearching == NO)
 	    break;
 	}
 
@@ -368,7 +441,7 @@ findClicked: (id)sender
 	  [findButton setEnabled: YES];
 	  [stopButton setEnabled: NO];
 	  printf("searching completed.\n");
-	  if (!keepSearching) {
+	  if (keepSearching == NO) {
 	    [equationField setStringValue: @"Search Interrupted"];
 	    printf("statusMessage: Search Interrupted.\n");
 	    [statusMessageField setStringValue: @"Search Interrupted"];
@@ -600,6 +673,8 @@ distanceAction: (id)sender
     {
       curFileName = curFile->filename;
       [viewFile setStringValue:
+		  [[NSString alloc] initWithUTF8String: curFileName]];
+      [viewFile setToolTip:
 		  [[NSString alloc] initWithUTF8String: curFileName]];
       [fileContentView setString:
 	[[NSString alloc]
@@ -890,13 +965,21 @@ distanceAction: (id)sender
 - (void)       tabView:(NSTabView *)tabView
   didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  printf("didSelectTabViewItem: %p\n", tabViewItem);
+  printf("didSelectTabViewItem: %p %p\n", tabViewItem, searchSettingTab);
+  if (tabViewItem == searchSettingTab)
+    {
+      keepSearching = NO;
+      [viewFile setStringValue: @""];
+      [fileContentView setString: @""];
+      [statusMessageField setStringValue: @""];
+      [window makeFirstResponder: inputBox0];
+    }
 }
   
 - (BOOL)          tabView:(NSTabView *)tabView
   shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  printf("didSelectTabViewItem: %p\n", tabViewItem);
+  printf("shouldSelectTabViewItem: %p\n", tabViewItem);
   return YES;
 }
 

@@ -151,7 +151,6 @@ st_expr_t *SearchState::genEquation()
    * rhm.
    */
   
-  printf("Search strings:");
   for (offset = 0; offset < 8; offset += 4)
     {
       expr = 0;
@@ -168,7 +167,6 @@ st_expr_t *SearchState::genEquation()
 	      if (ms->len > ST_LIMIT)
 		ms->len = ST_LIMIT;
 	      memcpy(ms->buf, myText[i]->toUtf8().constData(), ms->len);
-	      printf(" |%.*s|", ms->len, ms->buf);
 	      
 	      n1 = (st_expr_t *)malloc(sizeof *n1);
 	      if (!n1)
@@ -199,7 +197,6 @@ st_expr_t *SearchState::genEquation()
 	  rhs = expr;
 
     }
-  printf("\n");
 
   /* If necessary, fetch exactitude from thingy. */
 
