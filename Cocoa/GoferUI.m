@@ -1,16 +1,15 @@
 //
-//  GoferAppDelegate.m
+//  GoferUI.m
 //  Gofer
 //
-//  Created by Ted Lemon on 5/1/11.
-//  Copyright 2011 Edward W. Y. Lemon III. All rights reserved.
+//  Copyright 2013 Edward W. Y. Lemon III. All rights reserved.
 //
 
-#import "GoferAppDelegate.h"
+#import "GoferUI.h"
 #import "st.h"
 #import "filelist.h"
 
-@implementation GoferAppDelegate
+@implementation GoferUI
 
 @synthesize window;
 @synthesize inputBox0;
@@ -207,8 +206,7 @@
       const char *pe = print_expr(expr);
       printf("equation: %s\n", pe);
       if (pe)
-	[equationField
-	  setStringValue: [[NSString alloc] initWithUTF8String: pe]];
+	[window setTitle: [[NSString alloc] initWithUTF8String: pe]];
     }  
   return expr;
 }
@@ -709,15 +707,15 @@ distanceAction: (id)sender
 	      initWithBytes: curFile->contents + range.location
 		     length: range.length
 		   encoding: NSASCIIStringEncoding];
-	  char *dot = strrchr(curFile->reducename, '.');
-	  if (!dot)
-	    dot = curFile->reducename + strlen(curFile->reducename);
+	  char *dot = strrchr(curFile->filename, '.');
+	  /*	  if (!dot) */
+	    dot = curFile->filename + strlen(curFile->filename);
 	  NSString *filename =
-	    [[NSString alloc] initWithBytes: curFile->reducename
-				     length: dot - curFile->reducename
+	    [[NSString alloc] initWithBytes: curFile->filename
+				     length: dot - curFile->filename
 				   encoding: NSUTF8StringEncoding];
 	  NSArray *selArray = [NSArray arrayWithObjects:
-				    selection, filename, nil];
+					 selection, @"\n", filename, nil];
 	  NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	  [pb clearContents];
 	  [pb writeObjects: selArray];

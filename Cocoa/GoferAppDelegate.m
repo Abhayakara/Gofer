@@ -846,15 +846,15 @@ distanceAction: (id)sender
 	      initWithBytes: curFile->contents + range.location
 		     length: range.length
 		   encoding: NSASCIIStringEncoding];
-	  char *dot = strrchr(curFile->reducename, '.');
-	  if (!dot)
-	    dot = curFile->reducename + strlen(curFile->reducename);
+	  char *dot = strrchr(curFile->filename, '.');
+	  /*	  if (!dot) */
+	    dot = curFile->filename + strlen(curFile->filename);
 	  NSString *filename =
-	    [[NSString alloc] initWithBytes: curFile->reducename
-				     length: dot - curFile->reducename
+	    [[NSString alloc] initWithBytes: curFile->filename
+				     length: dot - curFile->filename
 				   encoding: NSUTF8StringEncoding];
 	  NSArray *selArray = [NSArray arrayWithObjects:
-				    selection, filename, nil];
+					 selection, @"\n", filename, nil];
 	  NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	  [pb clearContents];
 	  [pb writeObjects: selArray];
