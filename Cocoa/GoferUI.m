@@ -6,12 +6,13 @@
 //
 
 #import "GoferUI.h"
+#import "GoferAppDelegate.h"
 #import "st.h"
 #import "filelist.h"
 
 @implementation GoferUI
 
-@synthesize window;
+@synthesize win;
 @synthesize inputBox0;
 @synthesize inputBox1;
 @synthesize inputBox2;
@@ -35,10 +36,14 @@
 @synthesize ignoreNothing;
 @synthesize precisionPopUp;
 
+@synthesize tabView;
+@synthesize searchSettingTab;
+@synthesize savedSearchTab;
+@synthesize searchResultsTab;
+
 @synthesize equationField;
 @synthesize dirTable;
 
-@synthesize tabView;
 @synthesize nextMatchButton;
 @synthesize nextFileMatchButton;
 @synthesize prevMatchButton;
@@ -55,6 +60,8 @@
 @synthesize statusMessageField;
 
 @synthesize files;
+@synthesize closing;
+@synthesize searching;
 @synthesize keepSearching;
 @synthesize firstMatch;
 @synthesize haveContents;
@@ -62,22 +69,170 @@
 @synthesize filesMatched;
 @synthesize matchCount;
 
+- (id)init
+{
+  self = [super initWithWindowNibName:@"GoferUI"];  
+  if (self == nil)
+    printf("initWithWindowNibName failed.\n");
+  return self;
+}
+
+- (void)windowDidLoad
+{
+  printf("windowDidLoad\n");
+  [super windowDidLoad];
+}
+
+- (void)windowWillLoad
+{
+  printf("windowWillLoad\n");
+  [super windowWillLoad];
+}
+
+- (filelist_t *)files
+{
+  return files;
+}
+
+- (void)newMatch
+{
+  matchCount++;
+  if (firstMatch)
+    {
+      firstMatch = NO;
+      [self showCurMatch];
+    }
+  else
+    {
+      [self setMatchButtonStates];
+    }
+}
+
+- (void)newFileMatch
+{
+  filesMatched++;
+}
+
+- (void)startClose
+{
+  if (searching)
+    {
+      closing = YES;
+      keepSearching = NO;
+    }
+  [win performClose: self];
+  if (!closing)
+    [self finishClosing];
+}
+
+- (void)finishClosing
+{
+  if (files)
+    filelist_free(files);
+}
+
+- (void)dealloc
+{
+  printf("deallocating %p\n", self);
+}
+
+- (void)awakeFromNib
+{
+  [super awakeFromNib];
+
+  printf("wakeFromNib...\n");
+
+  checkboxColumn = [dirTable tableColumnWithIdentifier: @"checked"];
+  NSButtonCell *buttonColumn = [NSButtonCell new];
+  [buttonColumn setButtonType: NSSwitchButton];
+  [buttonColumn setTitle: @""];
+  [checkboxColumn setDataCell: buttonColumn];
+  dirnameColumn = [dirTable tableColumnWithIdentifier: @"dirname"];
+
+  NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
+  NSArray *dirNamesDef = [defs arrayForKey: @"dirNames"];
+  NSArray *dirsCheckedDef = [defs arrayForKey: @"dirsChecked"];
+
+  if (dirNamesDef != nil)
+    dirNames = [dirNamesDef mutableCopyWithZone: NULL];
+  else
+    dirNames = [NSMutableArray new];
+  if (dirsCheckedDef != nil)
+    dirsChecked = [dirsCheckedDef mutableCopyWithZone: NULL];
+  else
+    dirsChecked = [NSMutableArray new];
+		 
+  if ([defs objectForKey: @"searchExactitude"] != nil)
+    {
+      st_match_type_t searchExactitude =
+	[defs integerForKey: @"searchExactitude"];
+      if (searchExactitude == match_exactly)
+	[precisionPopUp selectItem: ignoreNothing];
+      else if (searchExactitude == match_ignores_spaces_and_case)
+	[precisionPopUp selectItem: ignoreSpaceCap];
+      else
+	[precisionPopUp selectItem: ignoreSpace];
+    }
+  else
+    [precisionPopUp selectItem: ignoreSpaceCap];
+
+  if ([defs objectForKey: @"combiner"] != nil)
+    {
+      st_expr_type_t combiner =
+	[defs integerForKey: @"combiner"];
+      if (combiner == ste_and)
+	[distancePopUp selectItem: andMenuItem];
+      else if (combiner == ste_or)
+	[distancePopUp selectItem: orMenuItem];
+      else if (combiner == ste_not)
+	[distancePopUp selectItem: notMenuItem];
+      else
+	[distancePopUp selectItem: distanceMenuItem];
+    }
+  else
+    [distancePopUp selectItem: distanceMenuItem];
+
+  if ([defs objectForKey: @"distance"] != nil)
+    {
+      int distance = [defs integerForKey: @"distance"];
+      [distanceBox setIntValue: distance];
+    }
+  else
+    [distanceBox setIntValue: 2];
+
+  files = new_filelist();
+  [dirTable setDataSource: self];
+  curFileName = 0;
+  firstMatch = YES;
+  keepSearching = YES;
+  closing = NO;
+  searching = NO;
+  [tabView setDelegate: self];
+  [tabView selectTabViewItemAtIndex: 0];
+  [win makeFirstResponder: inputBox0];
+
+  [self constrainUIToDisplay];
+}
+
 - (void)constrainUIToDisplay
 {
   NSArray *screenArray = [NSScreen screens];
-  NSScreen *myScreen = [window screen];
+  NSScreen *myScreen = [win screen];
   NSEnumerator *enumerator = [screenArray objectEnumerator];
   NSScreen *screen;
+  int ix = 0;
   
   while (screen = [enumerator nextObject])
     {
       NSRect screenRect = [screen visibleFrame];
       NSString *mString = ((myScreen == screen) ? @"Mine" : @"not mine");
-      
-      NSLog(@"Screen #%d (%@) Frame: %@", index, mString, NSStringFromRect(screenRect));
+      ix++;
+    
+      NSLog(@"Screen #%d (%@) Frame: %@",
+	    ix, mString, NSStringFromRect(screenRect));
       if (myScreen == screen)
 	{
-	  NSRect frameRect = [window frame];
+	  NSRect frameRect = [win frame];
 	  int modified = 0;
 	  if (frameRect.size.width > screenRect.size.width)
 	    {
@@ -90,7 +245,7 @@
 	      frameRect.origin.x = 0;
 	    }
 	  frameRect.origin.y = 0;
-	  [window setFrame: frameRect display: YES animate: YES];
+	  [win setFrame: frameRect display: YES animate: YES];
 	}
     }
   
@@ -206,7 +361,7 @@
       const char *pe = print_expr(expr);
       printf("equation: %s\n", pe);
       if (pe)
-	[window setTitle: [[NSString alloc] initWithUTF8String: pe]];
+	[win setTitle: [[NSString alloc] initWithUTF8String: pe]];
     }  
   return expr;
 }
@@ -228,6 +383,7 @@ findClicked: (id)sender
   curFileName = 0;
   firstMatch = YES;
   keepSearching = YES;
+  searching = YES;
 
   /* We need something to search before we can do a search. */
   if ([dirNames count] == 0)
@@ -245,19 +401,11 @@ findClicked: (id)sender
       return;
     }
   
-  for (ui_index = 0; ui_index < [uis count]; ui_index++)
-    {
-      if ([uis objectAtIndex: ui_index] == self)
-	break;
-    }
-  if (ui_index == [uis count])
-    [uis addObject: self];
+  ui_index = [GoferAppDelegate ui_index: self];
   
   [findButton setEnabled: NO];
   [findMenuItem setEnabled: NO];
   [stopButton setEnabled: YES];
-
-  keepSearching = YES;
 
   defQ = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
@@ -297,43 +445,48 @@ findClicked: (id)sender
 	    break;
 	}
 
-      dispatch_async(dispatch_get_main_queue(), ^{
-	  [findMenuItem setEnabled: YES];
-	  [findButton setEnabled: YES];
-	  [stopButton setEnabled: NO];
-	  printf("searching completed.\n");
-	  if (keepSearching == NO) {
-	    [equationField setStringValue: @"Search Interrupted"];
-	    printf("statusMessage: Search Interrupted.\n");
-	    [statusMessageField setStringValue: @"Search Interrupted"];
-	    [viewFile setStringValue: @""];
-	  } else {
-	    if (haveContents)
-	      {
-		[equationField setStringValue: @"Search Complete"];
-		printf("statusMessage: %d matches in %d files.\n",
-		       matchCount, filesMatched);
-		[statusMessageField setStringValue:
-				      [[NSString alloc]
-					initWithFormat: @"%d matches in %d files",
-					matchCount, filesMatched]];
-	      }
-	    else
-	      {
-		[tabView selectTabViewItemAtIndex: 0];
-		[equationField setStringValue: @"Search found no matches.\n"];
-		printf("statusMessage: Search found no matches.\n");
-		[statusMessageField setStringValue:
-				      @"Search found no matches.\n"];
+      if (!closing)
+	{
+	  dispatch_async(dispatch_get_main_queue(), ^{
+	      [findMenuItem setEnabled: YES];
+	      [findButton setEnabled: YES];
+	      [stopButton setEnabled: NO];
+	      printf("searching completed.\n");
+	      if (keepSearching == NO) {
+		[equationField setStringValue: @"Search Interrupted"];
+		printf("statusMessage: Search Interrupted.\n");
+		[statusMessageField setStringValue: @"Search Interrupted"];
 		[viewFile setStringValue: @""];
+	      } else {
+		if (haveContents)
+		  {
+		    [equationField setStringValue: @"Search Complete"];
+		    printf("statusMessage: %d matches in %d files.\n",
+			   matchCount, filesMatched);
+		    [statusMessageField setStringValue:
+					  [[NSString alloc]
+					    initWithFormat: @"%d matches in %d files",
+					    matchCount, filesMatched]];
+		  }
+		else
+		  {
+		    [tabView selectTabViewItemAtIndex: 0];
+		    [equationField setStringValue: @"Search found no matches.\n"];
+		    printf("statusMessage: Search found no matches.\n");
+		    [statusMessageField setStringValue:
+					  @"Search found no matches.\n"];
+		    [viewFile setStringValue: @""];
+		  }
 	      }
-	  }
 
-	  keepSearching = YES;
-	});
+	      keepSearching = YES;
+	    });
+	}
       
       if (expr)
 	free_expr(expr);
+      if (closing)
+	[self finishClosing];
     });
   
   [tabView selectTabViewItemAtIndex: 2];
@@ -383,7 +536,7 @@ addClicked: (id)sender
   [panel setMessage:@"Add one or more directories to the search list."];
     
   // Make it modal to the search UI window
-  [panel beginSheetModalForWindow:window completionHandler:^(NSInteger result)
+  [panel beginSheetModalForWindow:win completionHandler:^(NSInteger result)
 	 {
 	   // This code runs when the modal dialog finishes.
 	   // If they clicked OK, we add the files or directories
@@ -447,12 +600,28 @@ textAction: (id)sender
 distanceAction: (id)sender
 {
   int distance = [distanceBox intValue];
+  st_expr_type_t xt;
+  NSMenuItem *selectedItem = [distancePopUp selectedItem];
   [distanceMenuItem
     setTitle: [[NSString alloc]
 		initWithFormat: @"Within %d lines of", distance]];
   st_expr_t *expr = [self genEquation];
   if (expr)
     free_expr(expr);
+  [[NSUserDefaults standardUserDefaults]
+	setInteger: distance forKey: @"distance"];
+  if (selectedItem == orMenuItem)
+    xt = ste_or;
+  else if (selectedItem == andMenuItem)
+    xt = ste_and;
+  else if (selectedItem == notMenuItem)
+    xt = ste_not;
+  else if (selectedItem == distanceMenuItem)
+    xt = ste_near_lines;
+  else
+    xt = ste_near_lines;
+  [[NSUserDefaults standardUserDefaults]
+	setInteger: xt forKey: @"combiner"];
   printf("distanceAction.\n");
 }
 
@@ -688,7 +857,7 @@ distanceAction: (id)sender
   [self showCurMatch];
 }
 
-- (void)selectionToClipBoardWithInfo
+- (IBAction)selectionToClipBoardWithInfo: (id)sender
 {
   NSRange range = [fileContentView selectedRange];
 
@@ -833,7 +1002,7 @@ distanceAction: (id)sender
       [viewFile setStringValue: @""];
       [fileContentView setString: @""];
       [statusMessageField setStringValue: @""];
-      [window makeFirstResponder: inputBox0];
+      [win makeFirstResponder: inputBox0];
     }
 }
   

@@ -9,9 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "filelist.h"
 
-@interface GoferUI : NSObject <NSTableViewDataSource, NSTabViewDelegate> {
+@interface GoferUI : NSWindowController <NSTableViewDataSource,
+					   NSTabViewDelegate> {
 @private
-  NSWindow *window;
+  NSWindow *win;
 
   NSTextField *inputBox0;
   NSTextField *inputBox1;
@@ -61,6 +62,7 @@
   NSTextField *viewFile;
   NSTextField *statusMessageField;
 
+  BOOL searching;
   BOOL keepSearching;
   BOOL firstMatch;
   filelist_t *files;
@@ -73,6 +75,8 @@
 }
 
 @property filelist_t *files;
+@property BOOL closing;
+@property BOOL searching;
 @property BOOL keepSearching;
 @property BOOL firstMatch;
 @property BOOL haveContents;
@@ -80,53 +84,61 @@
 @property int filesMatched;
 @property int matchCount;
 
-@property (assign) IBOutlet NSWindow *window;
+@property (retain) IBOutlet NSWindow *win;
 
-@property(assign) IBOutlet NSTextField *inputBox0;
-@property(assign) IBOutlet NSTextField *inputBox1;
-@property(assign) IBOutlet NSTextField *inputBox2;
-@property(assign) IBOutlet NSTextField *inputBox3;
-@property(assign) IBOutlet NSTextField *inputBox4;
-@property(assign) IBOutlet NSTextField *inputBox5;
-@property(assign) IBOutlet NSTextField *inputBox6;
-@property(assign) IBOutlet NSTextField *inputBox7;
+@property(retain) IBOutlet NSTextField *inputBox0;
+@property(retain) IBOutlet NSTextField *inputBox1;
+@property(retain) IBOutlet NSTextField *inputBox2;
+@property(retain) IBOutlet NSTextField *inputBox3;
+@property(retain) IBOutlet NSTextField *inputBox4;
+@property(retain) IBOutlet NSTextField *inputBox5;
+@property(retain) IBOutlet NSTextField *inputBox6;
+@property(retain) IBOutlet NSTextField *inputBox7;
 
-@property(assign) IBOutlet NSTextField *distanceBox;
+@property(retain) IBOutlet NSTextField *distanceBox;
 
-@property(assign) IBOutlet NSPopUpButton *distancePopUp;
-@property(assign) IBOutlet NSMenu *distanceMenu;
-@property(assign) IBOutlet NSMenuItem *orMenuItem;
-@property(assign) IBOutlet NSMenuItem *distanceMenuItem;
-@property(assign) IBOutlet NSMenuItem *andMenuItem;
-@property(assign) IBOutlet NSMenuItem *notMenuItem;
+@property(retain) IBOutlet NSPopUpButton *distancePopUp;
+@property(retain) IBOutlet NSMenu *distanceMenu;
+@property(retain) IBOutlet NSMenuItem *orMenuItem;
+@property(retain) IBOutlet NSMenuItem *distanceMenuItem;
+@property(retain) IBOutlet NSMenuItem *andMenuItem;
+@property(retain) IBOutlet NSMenuItem *notMenuItem;
 
-@property(assign) IBOutlet NSTabView *tabView;
+@property(retain) IBOutlet NSTabView *tabView;
+@property(retain) IBOutlet NSTabViewItem *searchSettingTab;
+@property(retain) IBOutlet NSTabViewItem *savedSearchTab;
+@property(retain) IBOutlet NSTabViewItem *searchResultsTab;
 
-@property(assign) IBOutlet NSMenu *precisionMenu;
-@property(assign) IBOutlet NSPopUpButton *precisionPopUp;
-@property(assign) IBOutlet NSMenuItem *ignoreSpaceCap;
-@property(assign) IBOutlet NSMenuItem *ignoreSpace;
-@property(assign) IBOutlet NSMenuItem *ignoreNothing;
+@property(retain) IBOutlet NSMenu *precisionMenu;
+@property(retain) IBOutlet NSPopUpButton *precisionPopUp;
+@property(retain) IBOutlet NSMenuItem *ignoreSpaceCap;
+@property(retain) IBOutlet NSMenuItem *ignoreSpace;
+@property(retain) IBOutlet NSMenuItem *ignoreNothing;
 
-@property(assign) IBOutlet NSTextField *equationField;
+@property(retain) IBOutlet NSTextField *equationField;
 
-@property(assign) IBOutlet NSTableView *dirTable;
+@property(retain) IBOutlet NSTableView *dirTable;
 
-@property(assign) IBOutlet NSButton *nextMatchButton;
-@property(assign) IBOutlet NSButton *nextFileMatchButton;
-@property(assign) IBOutlet NSButton *prevMatchButton;
-@property(assign) IBOutlet NSButton *prevFileMatchButton;
-@property(assign) IBOutlet NSButton *stopButton;
-@property(assign) IBOutlet NSButton *findButton;
+@property(retain) IBOutlet NSButton *nextMatchButton;
+@property(retain) IBOutlet NSButton *nextFileMatchButton;
+@property(retain) IBOutlet NSButton *prevMatchButton;
+@property(retain) IBOutlet NSButton *prevFileMatchButton;
+@property(retain) IBOutlet NSButton *stopButton;
+@property(retain) IBOutlet NSButton *findButton;
 
-@property(assign) IBOutlet NSMenuItem *findMenuItem;
-@property(assign) IBOutlet NSMenuItem *findNextMenuItem;
-@property(assign) IBOutlet NSMenuItem *findPreviousMenuItem;
+@property(retain) IBOutlet NSMenuItem *findMenuItem;
+@property(retain) IBOutlet NSMenuItem *findNextMenuItem;
+@property(retain) IBOutlet NSMenuItem *findPreviousMenuItem;
 
-@property(assign) IBOutlet NSTextView *fileContentView;
-@property(assign) IBOutlet NSTextField *viewFile;
-@property(assign) IBOutlet NSTextField *statusMessageField;
+@property(retain) IBOutlet NSTextView *fileContentView;
+@property(retain) IBOutlet NSTextField *viewFile;
+@property(retain) IBOutlet NSTextField *statusMessageField;
 
+- (filelist_t *)files;
+- (void)newMatch;
+- (void)newFileMatch;
+- (void)startClose;
+- (void)finishClosing;
 - (void)constrainUIToDisplay;
 - (IBAction)findClicked:(id)sender;
 - (IBAction)saveClicked:(id)sender;
@@ -136,13 +148,14 @@
 - (IBAction)stopClicked:(id)sender;
 - (IBAction)textAction:(id)sender;
 - (IBAction)distanceAction:(id)sender;
+- (IBAction)precisionAction:(id)sender;
 
 - (IBAction)nextMatch: (id)sender;
 - (IBAction)nextFileMatch: (id)sender;
 - (IBAction)prevMatch: (id)sender;
 - (IBAction)prevFileMatch: (id)sender;
 
-- (void)selectionToClipBoardWithInfo;
+- (IBAction)selectionToClipBoardWithInfo: (id)sender;
 
 - (void)zapMatchView;
 - (void)showCurMatch;
