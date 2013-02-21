@@ -20,12 +20,15 @@
 		DF4E920313AD2A1D007F3E0F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF4E91FA13AD2A1D007F3E0F /* MainMenu.xib */; };
 		DF4E920513AD2A1D007F3E0F /* GoferAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */; };
 		DF4E920613AD2A1D007F3E0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4E920013AD2A1D007F3E0F /* main.m */; };
+		DF57EBD416D2F0FC00E09039 /* GoferUI.m in Sources */ = {isa = PBXBuildFile; fileRef = DF57EBD316D2F0FC00E09039 /* GoferUI.m */; };
 		DF7553D5136DE8BB00DDF1FE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */; };
 		DF7553F2136DE8BB00DDF1FE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */; };
 		DF7553FA136DE8BB00DDF1FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF7553F8136DE8BB00DDF1FE /* InfoPlist.strings */; };
 		DF7553FD136DE8BB00DDF1FE /* GoferTests.h in Resources */ = {isa = PBXBuildFile; fileRef = DF7553FC136DE8BB00DDF1FE /* GoferTests.h */; };
 		DF7553FF136DE8BB00DDF1FE /* GoferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553FE136DE8BB00DDF1FE /* GoferTests.m */; };
 		DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */ = {isa = PBXBuildFile; fileRef = DF755408136DEA7000DDF1FE /* Gofer.icns */; };
+		DF95489816D534D2004D03E9 /* GoferUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF95489716D534D2004D03E9 /* GoferUI.xib */; };
+		DFD6477F16D5CA1B00016AAE /* WinDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD6477E16D5CA1B00016AAE /* WinDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +61,8 @@
 		DF4E91FE13AD2A1D007F3E0F /* GoferAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoferAppDelegate.h; sourceTree = "<group>"; };
 		DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoferAppDelegate.m; sourceTree = "<group>"; };
 		DF4E920013AD2A1D007F3E0F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DF57EBD216D2F0FC00E09039 /* GoferUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoferUI.h; sourceTree = "<group>"; };
+		DF57EBD316D2F0FC00E09039 /* GoferUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoferUI.m; sourceTree = "<group>"; };
 		DF7553D0136DE8BB00DDF1FE /* Gofer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gofer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF7553D4136DE8BB00DDF1FE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		DF7553D7136DE8BB00DDF1FE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -70,6 +75,9 @@
 		DF7553FC136DE8BB00DDF1FE /* GoferTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoferTests.h; sourceTree = "<group>"; };
 		DF7553FE136DE8BB00DDF1FE /* GoferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoferTests.m; sourceTree = "<group>"; };
 		DF755408136DEA7000DDF1FE /* Gofer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Gofer.icns; sourceTree = "<group>"; };
+		DF95489716D534D2004D03E9 /* GoferUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GoferUI.xib; sourceTree = "<group>"; };
+		DFD6477D16D5CA1B00016AAE /* WinDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinDelegate.h; sourceTree = "<group>"; };
+		DFD6477E16D5CA1B00016AAE /* WinDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WinDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,9 +121,14 @@
 		DF4E91F513AD2A1D007F3E0F /* Cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				DFD6477D16D5CA1B00016AAE /* WinDelegate.h */,
+				DFD6477E16D5CA1B00016AAE /* WinDelegate.m */,
+				DF57EBD216D2F0FC00E09039 /* GoferUI.h */,
+				DF57EBD316D2F0FC00E09039 /* GoferUI.m */,
 				DF4E91F613AD2A1D007F3E0F /* Credits.rtf */,
 				DF4E91F813AD2A1D007F3E0F /* InfoPlist.strings */,
 				DF4E91FA13AD2A1D007F3E0F /* MainMenu.xib */,
+				DF95489716D534D2004D03E9 /* GoferUI.xib */,
 				DF4E91FC13AD2A1D007F3E0F /* Gofer-Info.plist */,
 				DF4E91FD13AD2A1D007F3E0F /* Gofer-Prefix.pch */,
 				DF4E91FE13AD2A1D007F3E0F /* GoferAppDelegate.h */,
@@ -268,6 +281,7 @@
 				DF4E920113AD2A1D007F3E0F /* Credits.rtf in Resources */,
 				DF4E920213AD2A1D007F3E0F /* InfoPlist.strings in Resources */,
 				DF4E920313AD2A1D007F3E0F /* MainMenu.xib in Resources */,
+				DF95489816D534D2004D03E9 /* GoferUI.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +327,8 @@
 				DF2B5D9E1370D3CC00122E43 /* tree.c in Sources */,
 				DF4E920513AD2A1D007F3E0F /* GoferAppDelegate.m in Sources */,
 				DF4E920613AD2A1D007F3E0F /* main.m in Sources */,
+				DF57EBD416D2F0FC00E09039 /* GoferUI.m in Sources */,
+				DFD6477F16D5CA1B00016AAE /* WinDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,7 +392,6 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_GC = required;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -384,9 +399,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.8;
 			};
 			name = Debug;
 		};
@@ -396,14 +411,13 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_GC = required;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.8;
 			};
 			name = Release;
 		};
@@ -411,6 +425,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -421,7 +439,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -430,6 +451,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -440,7 +465,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -450,6 +478,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Gofer.app/Contents/MacOS/Gofer";
+				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -462,6 +491,7 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -472,6 +502,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Gofer.app/Contents/MacOS/Gofer";
+				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
@@ -484,6 +515,7 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
