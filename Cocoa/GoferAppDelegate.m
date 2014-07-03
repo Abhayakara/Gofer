@@ -253,7 +253,6 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
     }
 }
 
-
 @end
 
 /* Local Variables:  */

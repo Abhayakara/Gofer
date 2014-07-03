@@ -10,7 +10,7 @@
 #import "filelist.h"
 
 @interface GoferUI : NSWindowController <NSTableViewDataSource,
-					   NSTabViewDelegate> {
+					 NSTabViewDelegate> {
 @private
   NSWindow *win;
 
@@ -72,6 +72,7 @@
 
   int filesMatched;
   int matchCount;
+  bool initialized;
 }
 
 @property filelist_t *files;
@@ -140,6 +141,9 @@
 - (void)startClose;
 - (void)finishClosing;
 - (void)constrainUIToDisplay;
+- (bool)deleteHit:(id)sender;
+- (void)returnHit:(id)sender;
+- (void)commandRet:(id)sender;
 - (IBAction)findClicked:(id)sender;
 - (IBAction)saveClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;

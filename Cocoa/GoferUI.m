@@ -71,6 +71,7 @@
 
 - (id)init
 {
+  initialized = NO;
   self = [super initWithWindowNibName:@"GoferUI"];  
   if (self == nil)
     printf("initWithWindowNibName failed.\n");
@@ -81,6 +82,7 @@
 {
   printf("windowDidLoad\n");
   [super windowDidLoad];
+  [tabView selectTabViewItem: searchSettingTab];
 }
 
 - (void)windowWillLoad
@@ -142,6 +144,9 @@
 
   printf("wakeFromNib...\n");
 
+  [dirTable registerForDraggedTypes:
+	   [NSArray arrayWithObject: NSPasteboardTypeString]];
+
   checkboxColumn = [dirTable tableColumnWithIdentifier: @"checked"];
   NSButtonCell *buttonColumn = [NSButtonCell new];
   [buttonColumn setButtonType: NSSwitchButton];
@@ -199,6 +204,7 @@
     }
   else
     [distanceBox setIntValue: 2];
+  [self distanceAction: self];
 
   files = new_filelist();
   [dirTable setDataSource: self];
@@ -208,7 +214,7 @@
   closing = NO;
   searching = NO;
   [tabView setDelegate: self];
-  [tabView selectTabViewItemAtIndex: 0];
+  printf("selecting tabView index 0\n");
   [win makeFirstResponder: inputBox0];
 
   [self constrainUIToDisplay];
@@ -366,6 +372,34 @@
   return expr;
 }
 
+- (bool)deleteHit: (id)sender
+{
+  if ([tabView selectedTabViewItem] == searchResultsTab)
+    {
+      [self prevMatch: sender];
+      return YES;
+    }
+  else
+    return NO;
+}
+
+- (void)
+returnHit: (id)sender
+{
+  if ([tabView selectedTabViewItem] == searchResultsTab)
+    [self nextMatch: sender];
+  else
+    [self findClicked: sender];
+}
+
+- (void)
+commandRet: (id)sender
+{
+  if ([tabView selectedTabViewItem] == searchResultsTab)
+    [self nextFileMatch: sender];
+  // Doesn't mean anything if we don't have search results.
+}
+
 - (IBAction)
 findClicked: (id)sender
 {
@@ -465,12 +499,19 @@ findClicked: (id)sender
 			   matchCount, filesMatched);
 		    [statusMessageField setStringValue:
 					  [[NSString alloc]
-					    initWithFormat: @"%d matches in %d files",
+					    initWithFormat: @"1/%d matches in %d files",
 					    matchCount, filesMatched]];
 		  }
 		else
 		  {
-		    [tabView selectTabViewItemAtIndex: 0];
+		    NSAlert *alert;
+		    alert = [NSAlert alertWithMessageText: @"No matches"
+					    defaultButton: nil
+					  alternateButton: nil
+					      otherButton: nil
+				informativeTextWithFormat: @""];
+		    [alert runModal];
+		    [tabView selectTabViewItem: searchSettingTab];
 		    [equationField setStringValue: @"Search found no matches.\n"];
 		    printf("statusMessage: Search found no matches.\n");
 		    [statusMessageField setStringValue:
@@ -489,7 +530,7 @@ findClicked: (id)sender
 	[self finishClosing];
     });
   
-  [tabView selectTabViewItemAtIndex: 2];
+  [tabView selectTabViewItem: searchResultsTab];
 }
 
 - (IBAction)
@@ -617,7 +658,10 @@ distanceAction: (id)sender
   else if (selectedItem == notMenuItem)
     xt = ste_not;
   else if (selectedItem == distanceMenuItem)
-    xt = ste_near_lines;
+    {
+      xt = ste_near_lines;
+      [distancePopUp selectItem: distanceMenuItem];
+    }
   else
     xt = ste_near_lines;
   [[NSUserDefaults standardUserDefaults]
@@ -734,6 +778,17 @@ distanceAction: (id)sender
   else
     [self seekMatch];
   [self setMatchButtonStates];
+
+  int matchesSoFar = 1;
+  int i, j;
+  for (i = 0; i < files->cur_file; i++)
+    matchesSoFar += files->files[i]->nzones;
+  if (i < files->nfiles)
+    matchesSoFar += files->files[i]->curzone;
+  [statusMessageField setStringValue:
+			[[NSString alloc]
+			  initWithFormat: @"%d/%d matches in %d files",
+			  matchesSoFar, matchCount, filesMatched]];
 }
 
 - (void)seekMatch
@@ -884,7 +939,8 @@ distanceAction: (id)sender
 				     length: dot - curFile->filename
 				   encoding: NSUTF8StringEncoding];
 	  NSArray *selArray = [NSArray arrayWithObjects:
-					 selection, @"\n", filename, nil];
+                               [NSString stringWithFormat:
+                                @"%@\n%@", filename, selection, nil], nil];
 	  NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	  [pb clearContents];
 	  [pb writeObjects: selArray];
@@ -995,7 +1051,10 @@ distanceAction: (id)sender
 - (void)       tabView:(NSTabView *)tabView
   didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  printf("didSelectTabViewItem: %p %p\n", tabViewItem, searchSettingTab);
+  printf("didSelectTabViewItem: %s %s\n",
+	 [[tabViewItem label] UTF8String],
+	 [[searchSettingTab label] UTF8String]);
+
   if (tabViewItem == searchSettingTab)
     {
       keepSearching = NO;
@@ -1009,13 +1068,15 @@ distanceAction: (id)sender
 - (BOOL)          tabView:(NSTabView *)tabView
   shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  printf("shouldSelectTabViewItem: %p\n", tabViewItem);
-  return YES;
+  printf("shouldSelectTabViewItem: %s\n", [[tabViewItem label] UTF8String]);
+  if (initialized)
+    return YES;
+  return NO;
 }
 
 - (void)        tabView:(NSTabView *)tabView
   willSelectTabViewItem:(NSTabViewItem *)tabViewItem {
-  printf("willSelectTabViewItem: %p\n", tabViewItem);
+  printf("willSelectTabViewItem: %s\n", [[tabViewItem label] UTF8String]);
 }
   
 - (void)writeDirDefaults
@@ -1023,6 +1084,75 @@ distanceAction: (id)sender
   NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
   [defs setObject: dirNames forKey: @"dirNames"];
   [defs setObject: dirsChecked forKey: @"dirsChecked"];
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView
+       acceptDrop:(id < NSDraggingInfo >)info
+	      row:(NSInteger)row
+    dropOperation:(NSTableViewDropOperation)operation
+{
+  NSPasteboard *pb = [info draggingPasteboard];
+  NSArray *array = [pb pasteboardItems];
+  int oldRow;
+  id filename;
+  id flag;
+  int i;
+  if ([array count] != 1)
+    {
+      printf("count not one: %ld\n", [array count]);
+      return NO;
+    }
+  oldRow = [[[array objectAtIndex: 0]
+	      stringForType: NSPasteboardTypeString] intValue];
+
+  if (operation == NSTableViewDropAbove)
+    --row;
+
+  [dirTable beginUpdates];
+  [dirTable moveRowAtIndex: oldRow toIndex: row];
+  [dirTable endUpdates];
+
+  filename = [dirNames objectAtIndex: oldRow];
+  [dirNames removeObjectAtIndex: oldRow];
+  [dirNames insertObject: filename atIndex: row];
+  flag = [dirsChecked objectAtIndex: oldRow];
+  [dirsChecked removeObjectAtIndex: oldRow];
+  [dirsChecked insertObject: flag atIndex: row];
+
+  [self writeDirDefaults];
+  return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)aTableView
+		validateDrop:(id < NSDraggingInfo >)info
+		 proposedRow:(NSInteger)row
+       proposedDropOperation:(NSTableViewDropOperation)operation
+{
+  printf("validateDrop: row %ld, operation: %d\n",
+	 (long)row, (int)operation);
+  if ([info draggingSource] == nil)
+    return NSDragOperationNone;
+  return NSDragOperationMove;
+}
+
+- (BOOL)     tableView:(NSTableView *)aTableView
+  writeRowsWithIndexes:(NSIndexSet *)rowIndexes
+	  toPasteboard:(NSPasteboard *)pboard
+{
+  NSMutableArray *array =
+    [NSMutableArray arrayWithCapacity: [rowIndexes count]];
+  [rowIndexes enumerateIndexesUsingBlock: ^(NSUInteger idx, BOOL *stop) {
+      [array addObject: [NSString stringWithFormat: @"%d", (int)idx, nil]];
+    }];
+  [pboard clearContents];
+  [pboard writeObjects: array];
+  return YES;
+}
+
+- (void)windowDidBecomeMain: (NSNotification *)notification
+{
+  initialized = YES;
+  [GoferAppDelegate newTopUI: [notification object]];
 }
 
 @end
