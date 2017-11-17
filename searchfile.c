@@ -96,73 +96,84 @@ cmp_exact(const char *a, const char *b, int len, const char *limit)
 static int
 casecmp(const char *a, const char *b, int len, const char *limit)
 {
-  const char *search_start = b;
-  while (len)
+    const char *search_start = b;
+    while (len)
     {
-      /* If we hit a space in the comparison string, let that space match
-       * any nonzero amount of space in the input.   Also let it match any
-       * ACIP page markers or tseks in the input.
-       */
-      if (isascii(*a) && isspace(*a))
-	{
-	  int inpage = 0;
-	  int matched = 0;
-	  int first;
-
-	  if (b == search_start)
-	    first = 1;
-	  else
-	    first = 0;
-
-	  /* Skip over the space. */
-	  while (b < limit)
-	    {
-	      if (*b == '@')
-		{
-		  inpage = 1;
-		}
-	      else if (isascii(*b) && isspace(*b))
-		{
-		  inpage = 0;
-		  matched++;
-		  if (first && matched > 1)
-		    return 0;
-		}
-	      else if (*b == ',' || *b == '*')
-		{
-		  inpage = 0;
-		}
-	      else if (inpage && isascii(*b) && isdigit(*b))
-		;
-	      else if (inpage && *b >= 'A' && *b <= 'Z')
-		inpage = 0;
-	      else
-		break;
-	      ++b;
-	    }
-	  /* If there's no longer space, we can't do a match. */
-	  if (!matched || limit - b + 1 < len)
-	    return 0;
-	}
-      else
-	{
-	  if (isascii(*a) && isascii(*b))
-	    {
-	      if (tolower(*a) != tolower(*b))
-		{
-		  return 0;
-		}
-	    }
-	  else if (*a != *b)
-	    {
-	      return 0;
-	    }
-	  ++b;
-	}
-      ++a; --len;
+        /* If we hit a space in the comparison string, let that space match
+         * any nonzero amount of space in the input.   Also let it match any
+         * ACIP page markers or tseks in the input.
+         */
+        if (isascii(*a) && isspace(*a))
+        {
+            int inpage = 0;
+            int matched = 0;
+            int first;
+            int inskip = 0;
+            
+            if (b == search_start)
+                first = 1;
+            else
+                first = 0;
+            
+            /* Skip over the space. */
+            while (b < limit)
+            {
+                if (inskip)
+                {
+                    if (*b == '}')
+                        inskip = 0;
+                } else {
+                if (*b == '{')
+                {
+                    inskip = 1;
+                }
+                if (*b == '@')
+                {
+                    inpage = 1;
+                }
+                else if (isascii(*b) && isspace(*b))
+                {
+                    inpage = 0;
+                    matched++;
+                    if (first && matched > 1)
+                        return 0;
+                }
+                else if (*b == ',' || *b == '*')
+                {
+                    inpage = 0;
+                }
+                else if (inpage && isascii(*b) && isdigit(*b))
+                    ;
+                else if (inpage && *b >= 'A' && *b <= 'Z')
+                    inpage = 0;
+                else
+                    break;
+                }
+                ++b;
+            }
+            /* If there's no longer space, we can't do a match. */
+            if (!matched || limit - b + 1 < len)
+                return 0;
+        }
+        else
+        {
+            if (isascii(*a) && isascii(*b))
+            {
+                if (tolower(*a) != tolower(*b))
+                {
+                    return 0;
+                }
+            }
+            else if (*a != *b)
+            {
+                return 0;
+            }
+            ++b;
+        }
+        ++a; --len;
     }
-  printf("match: |%.*s|\n", (int)(b - search_start), search_start);
-  return (int)(b - search_start);
+    printf("match: |%.*s|\n", (int)(b - search_start), search_start);
+    return (int)(b - search_start);
 }
 
 int

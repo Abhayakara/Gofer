@@ -25,6 +25,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "filelist.h"
+#import "GoferAppDelegate.h"
 
 @interface GoferUI : NSWindowController <NSTableViewDataSource,
 					 NSTabViewDelegate> {
@@ -86,6 +87,8 @@
   BOOL haveContents;
 
   char *curFileName;
+  FILE *debug_log;
+  long startSec;
 
   int filesMatched;
   int matchCount;
@@ -101,6 +104,7 @@
 
 @property int filesMatched;
 @property int matchCount;
+@property (retain) GoferAppDelegate *appDelegate;
 
 @property (retain) IBOutlet NSWindow *win;
 
@@ -191,6 +195,8 @@
 - (void)setStatusMessage: (NSString *)message;
 
 - (void)writeDirDefaults;
+- (void)highlightMatchesAt: (matchzone_t *)mz  status: (BOOL)status;
+- (void)setRangeHighlight: (NSRange)range status: (BOOL)status;
 @end
 
 /* Local Variables:  */

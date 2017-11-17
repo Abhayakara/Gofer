@@ -1,3 +1,4 @@
+
 //
 //  GoferAppDelegate.m
 //  Gofer
@@ -80,7 +81,7 @@ one_file(void *obj, const char *filename)
     return 1;
   GoferUI *me = [uis objectAtIndex: ui_index];
   const char *s = filename;
-  int len = strlen(filename);
+  size_t len = strlen(filename);
   if (len > 120)
     {
       s += (len - 120);
@@ -124,13 +125,35 @@ one_file(void *obj, const char *filename)
 }
 
 - (IBAction)
+bugReport: (id)sender
+{
+// XXX this has to marshall all of the files searched plus the search log and upload them or
+// XXX maybe just make a tarball that can be sent via email
+
+  // Each GoferUI sends events to the bug report collector
+  // events include:
+  //  - New Gofer UI
+  //  - Search started (includes search terms and folder list)
+  //  - Search process completed
+  //  - New file being displayed
+  //  - New match being displayed
+  //
+  // This is all maintained (in memory|on disk?) until a bug report is requested.
+  // At that time, we collect all of the files from which results were shown, along
+  // with all of the logged data, and either upload it to a web page, or else marshall
+  // it into a tar file, which can then be attached to an email message.
+}  
+
+- (IBAction)
 newWindow: (id)sender
 {
   GoferUI *ui;
-
+  NSWindow *window;
+    
   ui = [[GoferUI alloc] init];
-  if (ui)
+  if (ui != nil)
     [uis addObject: ui];
+  [ui setAppDelegate: self];
   [uis enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
        {
 	 GoferUI *me = obj;
@@ -149,7 +172,7 @@ newWindow: (id)sender
   for (ix = 0; ix < [winMenu numberOfItems]; ix++)
     {
       NSMenuItem *foo = [winMenu itemAtIndex: ix];
-      NSLog(@"Item %d: %@", ix, foo);
+      NSLog(@"Item %ld: %@", (long)ix, foo);
     }
 }
 

@@ -5,8 +5,8 @@
 //  Copyright 2013 Edward W. Y. Lemon III. All rights reserved.
 //
 
-#import "GoferUI.h"
 #import "GoferAppDelegate.h"
+#import "GoferUI.h"
 #import "st.h"
 #import "filelist.h"
 
@@ -72,7 +72,7 @@
 - (id)init
 {
   initialized = NO;
-  self = [super initWithWindowNibName:@"GoferUI"];  
+  self = [super initWithWindowNibName:@"GoferUI" owner: self];
   if (self == nil)
     printf("initWithWindowNibName failed.\n");
   return self;
@@ -89,11 +89,6 @@
 {
   printf("windowWillLoad\n");
   [super windowWillLoad];
-}
-
-- (filelist_t *)files
-{
-  return files;
 }
 
 - (void)newMatch
@@ -140,10 +135,13 @@
 
 - (void)awakeFromNib
 {
+  struct timeval tv;
+
   [super awakeFromNib];
 
   printf("wakeFromNib...\n");
 
+  [[self window] setTitle: @"Gofer 20171117.1003"];
   [dirTable registerForDraggedTypes:
 	   [NSArray arrayWithObject: NSPasteboardTypeString]];
 
@@ -166,11 +164,22 @@
     dirsChecked = [dirsCheckedDef mutableCopyWithZone: NULL];
   else
     dirsChecked = [NSMutableArray new];
+    if ([dirNames count] != [dirsChecked count])
+    {
+        dirsChecked = [NSMutableArray new];
+        [dirNames enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
+         {
+             printf("dirsChecked %d\n", (unsigned)idx);
+        [dirsChecked
+         addObject: [[NSNumber alloc] initWithBool: NO]];
+         }];
+        
+    }
 		 
   if ([defs objectForKey: @"searchExactitude"] != nil)
     {
       st_match_type_t searchExactitude =
-	[defs integerForKey: @"searchExactitude"];
+	(st_match_type_t)[defs integerForKey: @"searchExactitude"];
       if (searchExactitude == match_exactly)
 	[precisionPopUp selectItem: ignoreNothing];
       else if (searchExactitude == match_ignores_spaces_and_case)
@@ -181,9 +190,18 @@
   else
     [precisionPopUp selectItem: ignoreSpaceCap];
 
+  if ([defs objectForKey: @"distance"] != nil)
+    {
+      int distance = (int)[defs integerForKey: @"distance"];
+      [distanceBox setIntValue: distance];
+    }
+  else
+    [distanceBox setIntValue: 2];
+  [self distanceAction: self];
+
   if ([defs objectForKey: @"combiner"] != nil)
     {
-      st_expr_type_t combiner =
+      st_expr_type_t combiner = (st_expr_type_t)
 	[defs integerForKey: @"combiner"];
       if (combiner == ste_and)
 	[distancePopUp selectItem: andMenuItem];
@@ -197,15 +215,6 @@
   else
     [distancePopUp selectItem: distanceMenuItem];
 
-  if ([defs objectForKey: @"distance"] != nil)
-    {
-      int distance = [defs integerForKey: @"distance"];
-      [distanceBox setIntValue: distance];
-    }
-  else
-    [distanceBox setIntValue: 2];
-  [self distanceAction: self];
-
   files = new_filelist();
   [dirTable setDataSource: self];
   curFileName = 0;
@@ -213,6 +222,9 @@
   keepSearching = YES;
   closing = NO;
   searching = NO;
+  gettimeofday(&tv, NULL);
+  startSec = tv.tv_sec;
+  debug_log = fopen("/tmp/gofer.log", "w");
   [tabView setDelegate: self];
   printf("selecting tabView index 0\n");
   [win makeFirstResponder: inputBox0];
@@ -471,7 +483,7 @@ findClicked: (id)sender
 	    {
 	      if (!search_tree([dir UTF8String],
 			       expr, terms, n,
-			       one_element, one_file, (void *)ui_index,
+			       one_element, one_file, (void *)(unsigned long)ui_index,
 			       0, searchExactitude))
 		break;
 	    }
@@ -642,15 +654,8 @@ distanceAction: (id)sender
 {
   int distance = [distanceBox intValue];
   st_expr_type_t xt;
+
   NSMenuItem *selectedItem = [distancePopUp selectedItem];
-  [distanceMenuItem
-    setTitle: [[NSString alloc]
-		initWithFormat: @"Within %d lines of", distance]];
-  st_expr_t *expr = [self genEquation];
-  if (expr)
-    free_expr(expr);
-  [[NSUserDefaults standardUserDefaults]
-	setInteger: distance forKey: @"distance"];
   if (selectedItem == orMenuItem)
     xt = ste_or;
   else if (selectedItem == andMenuItem)
@@ -664,6 +669,38 @@ distanceAction: (id)sender
     }
   else
     xt = ste_near_lines;
+
+  NSInteger index = [distancePopUp indexOfItem: distanceMenuItem];
+  [distancePopUp removeItemAtIndex: index];
+  [distancePopUp
+    insertItemWithTitle: [[NSString alloc]
+			   initWithFormat: @"Within %d lines of", distance]
+		atIndex: index];
+  distanceMenuItem = [distancePopUp itemAtIndex: index];
+
+  switch(xt)
+    {
+    case ste_or:
+      [distancePopUp selectItem: orMenuItem];
+      break;
+    case ste_and:
+      [distancePopUp selectItem: andMenuItem];
+      break;
+    case ste_not:
+      [distancePopUp selectItem: notMenuItem];
+      break;
+    default:
+    case ste_near_lines:
+      [distancePopUp selectItem: distanceMenuItem];
+      break;
+    }
+
+  st_expr_t *expr = [self genEquation];
+  if (expr)
+    free_expr(expr);
+  [[NSUserDefaults standardUserDefaults]
+	setInteger: distance forKey: @"distance"];
+
   [[NSUserDefaults standardUserDefaults]
 	setInteger: xt forKey: @"combiner"];
   printf("distanceAction.\n");
@@ -745,6 +782,12 @@ distanceAction: (id)sender
 
   if (!curFileName || strcmp(curFileName, curFile->filename))
     {
+      if (curFileName)
+	{
+	  fputs("\n", debug_log);
+	}
+      fprintf(debug_log, "%s\n", curFile->filename);
+      
       curFileName = curFile->filename;
       [viewFile setStringValue:
 		  [[NSString alloc] initWithUTF8String: curFileName]];
@@ -757,22 +800,7 @@ distanceAction: (id)sender
 		    encoding: NSASCIIStringEncoding
 		freeWhenDone: NO]];
       [fileContentView setRichText: YES];
-
-      NSRange range;
-      range.location = mz->first_char;
-      if (mz->last_len)
-	range.length = mz->last_char - mz->first_char + mz->last_len;
-      else
-	range.length = mz->first_len;
-      [fileContentView scrollRangeToVisible: range];
-      range.length = mz->first_len;
-      [fileContentView setTextColor: [NSColor redColor] range: range];
-      if (mz->last_len)
-	{
-	  range.location = mz->last_char;
-	  range.length = mz->last_len;
-	  [fileContentView setTextColor: [NSColor redColor] range: range];
-	}
+      [self highlightMatchesAt: mz status: YES];
       haveContents = true;
     }
   else
@@ -780,7 +808,7 @@ distanceAction: (id)sender
   [self setMatchButtonStates];
 
   int matchesSoFar = 1;
-  int i, j;
+  int i;
   for (i = 0; i < files->cur_file; i++)
     matchesSoFar += files->files[i]->nzones;
   if (i < files->nfiles)
@@ -803,22 +831,7 @@ distanceAction: (id)sender
     return;
   mz = curFile->matches[curFile->curzone];
 
-  NSRange range;
-  range.location = mz->first_char;
-  if (mz->last_len)
-    range.length = mz->last_char - mz->first_char + mz->last_len;
-  else
-    range.length = mz->first_len;
-  [fileContentView scrollRangeToVisible: range];
-  range.length = mz->first_len;
-  [fileContentView setTextColor: [NSColor redColor] range: range];
-  if (mz->last_len)
-    {
-      range.location = mz->last_char;
-      range.length = mz->last_len;
-      [fileContentView setTextColor: [NSColor redColor] range: range];
-    }
-
+  [self highlightMatchesAt: mz status: YES];
   [self setMatchButtonStates];
 }
 
@@ -960,16 +973,7 @@ distanceAction: (id)sender
     return;
   mz = curFile->matches[curFile->curzone];
 
-  NSRange range;
-  range.location = mz->first_char;
-  range.length = mz->first_len;
-  [fileContentView setTextColor: [NSColor blackColor] range: range];
-  if (mz->last_len)
-    {
-      range.location = mz->last_char;
-      range.length = mz->last_len;
-      [fileContentView setTextColor: [NSColor blackColor] range: range];
-    }
+  [self highlightMatchesAt: mz status: NO];
 }
 
 - (void)setMatchButtonStates
@@ -1096,7 +1100,6 @@ distanceAction: (id)sender
   int oldRow;
   id filename;
   id flag;
-  int i;
   if ([array count] != 1)
     {
       printf("count not one: %ld\n", [array count]);
@@ -1147,6 +1150,47 @@ distanceAction: (id)sender
   [pboard clearContents];
   [pboard writeObjects: array];
   return YES;
+}
+
+- (void)highlightMatchesAt: (matchzone_t *)mz  status: (BOOL)status
+{
+  NSRange fullRange;
+  NSRange firstRange;
+  NSRange secondRange;
+  struct timeval tv;
+
+  gettimeofday(&tv, NULL);
+  fprintf(debug_log, "%ld %ld %d %d %d %d %s\n",
+	  tv.tv_sec - startSec, tv.tv_usec,
+	  mz->first_char, mz->first_len, mz->last_char, mz->last_len, status ? "t" : "f");
+  fullRange.location = mz->first_char;
+  if (mz->last_len)
+    fullRange.length = mz->last_char - mz->first_char + mz->last_len;
+  else
+    fullRange.length = mz->first_len;
+  if (status)
+    [fileContentView scrollRangeToVisible: fullRange];
+
+  firstRange.location = mz->first_char;
+  firstRange.length = mz->first_len;
+  [self setRangeHighlight: firstRange status: YES];
+  if (mz->last_len)
+    {
+      secondRange.location = mz->last_char;
+      secondRange.length = mz->last_len;
+      [self setRangeHighlight: secondRange status: YES];
+    }
+
+  if (status)
+    [fileContentView showFindIndicatorForRange: fullRange];
+}
+
+- (void)setRangeHighlight: (NSRange)range status: (BOOL)status
+{
+  if (status)
+    [fileContentView setTextColor: [NSColor redColor] range: range];
+  else
+    [fileContentView setTextColor: [NSColor blackColor] range: range];
 }
 
 - (void)windowDidBecomeMain: (NSNotification *)notification
