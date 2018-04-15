@@ -1,0 +1,5 @@
+.depend
+moc_*
+qrc_*
+Gofer.app
+Makefile
