@@ -1,8 +1,9 @@
+// -*- Mode: ObjC; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  GoferWindow.h
 //
 
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -26,7 +27,7 @@
 @interface GoferWindow : NSWindow
 {
 @private
-  GoferUI *ui;
+	GoferUI *ui;
 }
 
 @property (retain) IBOutlet GoferUI *ui;
@@ -35,5 +36,4 @@
 
 /* Local Variables:  */
 /* mode:ObjC */
-/* c-file-style:"gnu" */
 /* end: */

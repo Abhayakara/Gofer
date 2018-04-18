@@ -1,8 +1,9 @@
+// -*- Mode: ObjC; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  WinDelegate.m
 //  Gofer
 //
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -32,12 +33,6 @@
 {
 }
 
-- (NSSize)                                window: (NSWindow *)window
- willResizeForVersionBrowserWithMaxPreferredSize: (NSSize)maxPreferredSize
-				  maxAllowedSize: (NSSize)maxAllowedSize
-{
-}
-
 - (void)windowDidEnterVersionBrowser: (NSNotification *)notification
 {
 }
@@ -56,12 +51,11 @@
 
 - (void)windowDidBecomeMain: (NSNotification *)notification
 {
-  [GoferAppDelegate newTopUI: [notification object]];
+	[GoferAppDelegate newTopUI: [notification object]];
 }
 
-  @end
+@end
 
 /* Local Variables:  */
 /* mode:ObjC */
-/* c-file-style:"gnu" */
 /* end: */

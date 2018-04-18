@@ -1,8 +1,9 @@
-/* errwarn.c
+/* -*- Mode: C; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
+ * errwarn.c
 
    Errors and warnings... */
 
-/* Copyright (c) 2003 Edward W. Lemon III
+/* Copyright (c) 2003, 2018 Edward W. Lemon III
  *
  *  This file is part of GOFER.
  *
@@ -397,5 +398,4 @@ char *pWSAError ()
 
 /* Local Variables:  */
 /* mode:C */
-/* c-file-style:"gnu" */
 /* end: */

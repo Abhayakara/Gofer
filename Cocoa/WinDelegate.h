@@ -1,9 +1,10 @@
+// -*- Mode: ObjC; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  WinDelegate.h
 //  Gofer
 //
 
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -33,5 +34,4 @@
 
 /* Local Variables:  */
 /* mode:ObjC */
-/* c-file-style:"gnu" */
 /* end: */

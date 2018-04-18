@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF0B1DE52088047000B53C1A /* (null) in Resources */ = {isa = PBXBuildFile; };
 		DF19A8D1172D7B89005BC075 /* GoferWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = DF19A8D0172D7B89005BC075 /* GoferWindow.m */; };
+		DF1E6BE820880502002856F1 /* unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = DF1E6BE720880502002856F1 /* unicode.c */; };
 		DF2B5D951370D3CC00122E43 /* combine.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D881370D3CC00122E43 /* combine.c */; };
 		DF2B5D961370D3CC00122E43 /* errwarn.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D891370D3CC00122E43 /* errwarn.c */; };
 		DF2B5D971370D3CC00122E43 /* expr.c in Sources */ = {isa = PBXBuildFile; fileRef = DF2B5D8A1370D3CC00122E43 /* expr.c */; };
@@ -47,6 +49,7 @@
 /* Begin PBXFileReference section */
 		DF19A8CF172D7B89005BC075 /* GoferWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoferWindow.h; sourceTree = "<group>"; };
 		DF19A8D0172D7B89005BC075 /* GoferWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoferWindow.m; sourceTree = "<group>"; };
+		DF1E6BE720880502002856F1 /* unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unicode.c; sourceTree = SOURCE_ROOT; };
 		DF2B5D881370D3CC00122E43 /* combine.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = combine.c; sourceTree = SOURCE_ROOT; };
 		DF2B5D891370D3CC00122E43 /* errwarn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = errwarn.c; sourceTree = SOURCE_ROOT; };
 		DF2B5D8A1370D3CC00122E43 /* expr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = expr.c; sourceTree = SOURCE_ROOT; };
@@ -110,6 +113,7 @@
 		DF2B5CA71370D34900122E43 /* libgofer */ = {
 			isa = PBXGroup;
 			children = (
+				DF1E6BE720880502002856F1 /* unicode.c */,
 				DF2B5D881370D3CC00122E43 /* combine.c */,
 				DF2B5D891370D3CC00122E43 /* errwarn.c */,
 				DF2B5D8A1370D3CC00122E43 /* expr.c */,
@@ -252,7 +256,7 @@
 		DF7553C7136DE8BA00DDF1FE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Diamond Mountain";
 				TargetAttributes = {
 					DF7553CF136DE8BB00DDF1FE = {
@@ -286,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0B1DE52088047000B53C1A /* (null) in Resources */,
 				DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */,
 				DFFBC798195FB201007412CF /* GoferUI.xib in Resources */,
 				DF4E920113AD2A1D007F3E0F /* Credits.rtf in Resources */,
@@ -331,6 +336,7 @@
 				DF2B5D971370D3CC00122E43 /* expr.c in Sources */,
 				DF2B5D981370D3CC00122E43 /* filelist.c in Sources */,
 				DF2B5D991370D3CC00122E43 /* lex.c in Sources */,
+				DF1E6BE820880502002856F1 /* unicode.c in Sources */,
 				DF2B5D9B1370D3CC00122E43 /* near.c in Sources */,
 				DF2B5D9D1370D3CC00122E43 /* searchfile.c in Sources */,
 				DF2B5D9E1370D3CC00122E43 /* tree.c in Sources */,
@@ -403,18 +409,19 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -444,18 +451,19 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Ted Lemon";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -535,6 +543,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Gofer.app/Contents/MacOS/Gofer";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -562,6 +571,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Gofer.app/Contents/MacOS/Gofer";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;

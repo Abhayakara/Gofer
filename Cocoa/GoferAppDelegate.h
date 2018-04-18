@@ -1,10 +1,11 @@
+// -*- Mode: C; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  GoferAppDelegate.h
 //  Gofer
 //
 //  Created by Ted Lemon on 5/1/11.
 
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -28,18 +29,18 @@
 
 @interface GoferAppDelegate : NSObject <NSApplicationDelegate> {
 @private
-  NSMenuItem *separatorMark;
-  NSMenuItem *winMenu1;
-  NSMenuItem *winMenu2;
-  NSMenuItem *winMenu3;
-  NSMenuItem *winMenu4;
-  NSMenuItem *winMenu5;
-  NSMenuItem *winMenu6;
-  NSMenuItem *winMenu7;
-  NSMenuItem *winMenu8;
-  NSMenuItem *winMenu9;
-  NSArray *winMenus;
-  NSMenu *winMenu;
+	NSMenuItem *separatorMark;
+	NSMenuItem *winMenu1;
+	NSMenuItem *winMenu2;
+	NSMenuItem *winMenu3;
+	NSMenuItem *winMenu4;
+	NSMenuItem *winMenu5;
+	NSMenuItem *winMenu6;
+	NSMenuItem *winMenu7;
+	NSMenuItem *winMenu8;
+	NSMenuItem *winMenu9;
+	NSArray *winMenus;
+	NSMenu *winMenu;
 }
 
 @property NSArray *winMenus;
@@ -67,14 +68,13 @@
 @end
 
 void one_element(void *obj, const char *fname,
-		 char *contents, int content_length,
-		 int first_line, int last_line,
-		 int first_char, int first_len,
-		 int last_char, int last_len,
-		 int *cur_line, int *cur_char);
+		 char *contents, off_t content_length,
+		 off_t first_line, off_t last_line,
+		 off_t first_char, off_t first_len,
+		 off_t last_char, off_t last_len,
+		 off_t *cur_line, off_t *cur_char);
 int one_file(void *obj, const char *filename);
 
 /* Local Variables:  */
 /* mode:ObjC */
-/* c-file-style:"gnu" */
 /* end: */

@@ -1,9 +1,10 @@
-/* lex.h
+/* -*- Mode: C; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
+ * lex.h
  * 
  * Definitions for lexical analyzer.
  */
 
-/* Copyright (c) 2003 Edward W. Lemon III
+/* Copyright (c) 2003, 2018 Edward W. Lemon III
  *
  *  This file is part of GOFER.
  *
@@ -63,83 +64,83 @@
  */
 
 typedef enum token {
-  SEMI = ';',
-  DOT = '.',
-  COLON = ':',
-  COMMA = ',',
-  SLASH = '/',
-  LBRACE = '{',
-  RBRACE = '}',
-  LPAREN = '(',
-  RPAREN = ')',
-  EQUAL = '=',
-  BANG = '!',
-  PERCENT = '%',
-  PLUS = '+',
-  MINUS = '-',
-  ASTERISK = '*',
-  AMPERSAND = '&',
-  PIPE = '|',
-  CARET = '^',
+	SEMI = ';',
+	DOT = '.',
+	COLON = ':',
+	COMMA = ',',
+	SLASH = '/',
+	LBRACE = '{',
+	RBRACE = '}',
+	LPAREN = '(',
+	RPAREN = ')',
+	EQUAL = '=',
+	BANG = '!',
+	PERCENT = '%',
+	PLUS = '+',
+	MINUS = '-',
+	ASTERISK = '*',
+	AMPERSAND = '&',
+	PIPE = '|',
+	CARET = '^',
 
-  AND = 256,
-  FIRST_TOKEN = AND,
-  STRING = 257,
-  NUMBER = 258,
-  NUMBER_OR_NAME = 259,
-  OR = 260,
-  WITHIN = 261,
-  LINES = 262,
-  CHARACTERS = 263,
-  OF = 264,
-  NAME = 265,
-  END_OF_FILE = 266,
-  NOT = 267
+	AND = 256,
+	FIRST_TOKEN = AND,
+	STRING = 257,
+	NUMBER = 258,
+	NUMBER_OR_NAME = 259,
+	OR = 260,
+	WITHIN = 261,
+	LINES = 262,
+	CHARACTERS = 263,
+	OF = 264,
+	NAME = 265,
+	END_OF_FILE = 266,
+	NOT = 267
 
 } token_t;
 
 #define is_identifier(x)	((x) >= FIRST_TOKEN &&	\
-				 (x) != STRING &&	\
-				 (x) != NUMBER &&	\
-				 (x) != END_OF_FILE)
+							 (x) != STRING &&		\
+							 (x) != NUMBER &&		\
+							 (x) != END_OF_FILE)
 
 /* A parsing context. */
 
 typedef struct parse {
-  int lexline;
-  int lexchar;
-  char *token_line;
-  char *prev_line;
-  char *cur_line;
-  const char *tlname;
-  int eol_token;
+	int lexline;
+	int lexchar;
+	char *token_line;
+	char *prev_line;
+	char *cur_line;
+	const char *tlname;
+	int eol_token;
 
-  char line1 [81];
-  char line2 [81];
-  int lpos;
-  int line;
-  int tlpos;
-  int tline;
-  token_t token;
-  int ugflag;
-  char *tval;
-  int tlen;
-  char tokbuf [1500];
+	char line1 [81];
+	char line2 [81];
+	int lpos;
+	int line;
+	int tlpos;
+	int tline;
+	token_t token;
+	int ugflag;
+	char *tval;
+	int tlen;
+	char tokbuf [1500];
 
-  int warnings_occurred;
-  int file;
-  char *inbuf;
-  unsigned long bufix, buflen;
-  unsigned long bufsiz;
+	int warnings_occurred;
+	int file;
+	char *inbuf;
+	unsigned long bufix, buflen;
+	unsigned long bufsiz;
 } parse_t;
 
 /* lex.c */
 int new_parse(parse_t **cfile, int file,
-	      char *inbuf, unsigned buflen, const char *name, int eolp);
+			  char *inbuf, unsigned buflen, const char *name, int eolp);
 int end_parse(parse_t **cfile);
 enum token next_token(const char **rval, unsigned *rlen, parse_t *cfile);
 enum token peek_token(const char **rval,
-		      unsigned int *rlen, parse_t *cfile);
+					  unsigned int *rlen, parse_t *cfile);
 
 /* main.c */
 int main(int argc, char **argv);
@@ -153,5 +154,4 @@ int parse_warn (parse_t *cfile, const char *fmt, ...);
 
 /* Local Variables:  */
 /* mode:C */
-/* c-file-style:"gnu" */
 /* end: */

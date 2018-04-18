@@ -1,10 +1,11 @@
+// -*- Mode: ObjC; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  main.m
 //  Gofer
 //
 //  Created by Ted Lemon on 5/1/11.
 
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -27,5 +28,5 @@
 
 int main(int argc, char *argv[])
 {
-    return NSApplicationMain(argc, (const char **)argv);
+	return NSApplicationMain(argc, (const char **)argv);
 }

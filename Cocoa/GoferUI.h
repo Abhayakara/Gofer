@@ -1,10 +1,11 @@
+// -*- Mode: ObjC; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
 //
 //  GoferAppDelegate.h
 //  Gofer
 //
 //  Created by Ted Lemon on 5/1/11.
 
-// Copyright (c) 2011-2014 Edward W. Lemon III
+// Copyright (c) 2011-2014, 2018 Edward W. Lemon III
 
 // This file is part of GOFER.
 
@@ -28,71 +29,72 @@
 #import "GoferAppDelegate.h"
 
 @interface GoferUI : NSWindowController <NSTableViewDataSource,
-					 NSTabViewDelegate> {
+											 NSTabViewDelegate>
+{
 @private
-  NSWindow *win;
+	NSWindow *win;
 
-  NSTextField *inputBox0;
-  NSTextField *inputBox1;
-  NSTextField *inputBox2;
-  NSTextField *inputBox3;
-  NSTextField *inputBox4;
-  NSTextField *inputBox5;
-  NSTextField *inputBox6;
-  NSTextField *inputBox7;
+	NSTextField *inputBox0;
+	NSTextField *inputBox1;
+	NSTextField *inputBox2;
+	NSTextField *inputBox3;
+	NSTextField *inputBox4;
+	NSTextField *inputBox5;
+	NSTextField *inputBox6;
+	NSTextField *inputBox7;
   
-  NSPopUpButton *distancePopUp;
-  NSTextField *distanceBox;
-  NSMenu *distanceMenu;
-  NSMenuItem *orMenuItem;
-  NSMenuItem *andMenuItem;
-  NSMenuItem *notMenuItem;
-  NSMenuItem *distanceMenuItem;
-  NSMenu *precisionMenu;
-  NSPopUpButton *precisionPopUp;
-  NSMenuItem *ignoreSpaceCap;
-  NSMenuItem *ignoreSpace;
-  NSMenuItem *ignoreNothing;
+	NSPopUpButton *distancePopUp;
+	NSTextField *distanceBox;
+	NSMenu *distanceMenu;
+	NSMenuItem *orMenuItem;
+	NSMenuItem *andMenuItem;
+	NSMenuItem *notMenuItem;
+	NSMenuItem *distanceMenuItem;
+	NSMenu *precisionMenu;
+	NSPopUpButton *precisionPopUp;
+	NSMenuItem *ignoreSpaceCap;
+	NSMenuItem *ignoreSpace;
+	NSMenuItem *ignoreNothing;
   
-  NSTextField *equationField;
-  NSTableView *dirTable;
-  NSTableColumn *checkboxColumn;
-  NSTableColumn *dirnameColumn;
+	NSTextField *equationField;
+	NSTableView *dirTable;
+	NSTableColumn *checkboxColumn;
+	NSTableColumn *dirnameColumn;
   
-  NSMutableArray *dirNames;
-  NSMutableArray *dirsChecked;
+	NSMutableArray *dirNames;
+	NSMutableArray *dirsChecked;
 
-  NSTabView *tabView;
-  NSTabViewItem *searchSettingTab;
-  NSTabViewItem *savedSearchTab;
-  NSTabViewItem *searchResultsTab;
-  NSButton *nextMatchButton;
-  NSButton *nextFileMatchButton;
-  NSButton *prevMatchButton;
-  NSButton *prevFileMatchButton;
-  NSButton *stopButton;
-  NSButton *findButton;
-  NSMenuItem *findMenuItem;
-  NSMenuItem *findNextMenuItem;
-  NSMenuItem *findPreviousMenuItem;
+	NSTabView *tabView;
+	NSTabViewItem *searchSettingTab;
+	NSTabViewItem *savedSearchTab;
+	NSTabViewItem *searchResultsTab;
+	NSButton *nextMatchButton;
+	NSButton *nextFileMatchButton;
+	NSButton *prevMatchButton;
+	NSButton *prevFileMatchButton;
+	NSButton *stopButton;
+	NSButton *findButton;
+	NSMenuItem *findMenuItem;
+	NSMenuItem *findNextMenuItem;
+	NSMenuItem *findPreviousMenuItem;
 
-  NSTextView *fileContentView;
-  NSTextField *viewFile;
-  NSTextField *statusMessageField;
+	NSTextView *fileContentView;
+	NSTextField *viewFile;
+	NSTextField *statusMessageField;
 
-  BOOL searching;
-  BOOL keepSearching;
-  BOOL firstMatch;
-  filelist_t *files;
-  BOOL haveContents;
+	BOOL searching;
+	BOOL keepSearching;
+	BOOL firstMatch;
+	filelist_t *files;
+	BOOL haveContents;
 
-  char *curFileName;
-  FILE *debug_log;
-  long startSec;
+	char *curFileName;
+	FILE *debug_log;
+	long startSec;
 
-  int filesMatched;
-  int matchCount;
-  bool initialized;
+	int filesMatched;
+	int matchCount;
+	bool initialized;
 }
 
 @property filelist_t *files;
@@ -101,7 +103,11 @@
 @property BOOL keepSearching;
 @property BOOL firstMatch;
 @property BOOL haveContents;
-
+@property FILE *debug_log;
+@property NSMutableArray *dirsChecked;
+@property NSMutableArray *dirNames;
+@property long startSec;
+				   
 @property int filesMatched;
 @property int matchCount;
 @property (retain) GoferAppDelegate *appDelegate;
@@ -201,5 +207,4 @@
 
 /* Local Variables:  */
 /* mode:ObjC */
-/* c-file-style:"gnu" */
 /* end: */

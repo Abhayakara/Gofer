@@ -1,9 +1,10 @@
-/* filelist.h
+/* -*- Mode: C; tab-width: 4; c-file-style: "bsd"; c-basic-offset: 4; fill-column: 108 -*-
+ * filelist.h
  *
  * Definitions for filelist.c
  */
 
-/* Copyright (c) 2004,2005 Edward W. Lemon III
+/* Copyright (c) 2004, 2005, 2018 Edward W. Lemon III
  *
  *  This file is part of GOFER.
  *
@@ -28,43 +29,43 @@ extern "C" {
 #endif
 
 typedef struct matchzone {
-  int first_line;
-  int last_line;
-  int first_char;
-  int first_len;
-  int last_char;
-  int last_len;
-  int cur_line;
-  int cur_char;
+	off_t first_line;
+	off_t last_line;
+	off_t first_char;
+	off_t first_len;
+	off_t last_char;
+	off_t last_len;
+	off_t cur_line;
+	off_t cur_char;
 } matchzone_t;
 
 typedef struct fileresult {
-  char *filename;
-  char *reducename;
-  char *contents;
-  int content_length;
-  int nzones;
-  int maxzones;
-  int curzone;
-  matchzone_t **matches;
+	char *filename;
+	char *reducename;
+	char *contents;
+	off_t content_length;
+	int nzones;
+	int maxzones;
+	int curzone;
+	matchzone_t **matches;
 } fileresults_t;
 
 typedef struct filelist {
-  int nfiles;
-  int maxfiles;
-  fileresults_t **files;
-  int cur_file;
-  int cur_file_seen;
-  int cur_match_seen;
+	int nfiles;
+	int maxfiles;
+	fileresults_t **files;
+	int cur_file;
+	int cur_file_seen;
+	int cur_match_seen;
 } filelist_t;
 	
 filelist_t *new_filelist(void);
 void new_entry(filelist_t *dest,
-	       const char *filename, char *contents, int content_length,
-	       int first_line, int last_line,
-	       int first_char, int first_len,
-	       int last_char, int last_len,
-	       int *cur_line, int *cur_char);
+			   const char *filename, char *contents, off_t content_length,
+			   off_t first_line, off_t last_line,
+			   off_t first_char, off_t first_len,
+			   off_t last_char, off_t last_len,
+			   off_t *cur_line, off_t *cur_char);
 void filelist_free(filelist_t *fl);
 
 #ifdef __cplusplus
@@ -73,5 +74,4 @@ void filelist_free(filelist_t *fl);
 
 /* Local Variables:  */
 /* mode:C */
-/* c-file-style:"gnu" */
 /* end: */
