@@ -43,10 +43,10 @@
  */
 
 int
-is_unicode(char *contents, int len)
+is_unicode(char *contents, off_t len)
 {
-	char *eof = contents + len;
 	unsigned char *cp = (unsigned char *)contents;
+	unsigned char *eob = (unsigned char *)contents + len;
 	int cplen = 1;
 	int seen_uc = 0;
 
@@ -63,32 +63,89 @@ is_unicode(char *contents, int len)
 				cplen = 3;
 			else if (*cp >= 0xF8)
 				return 0; // invalid
-			if (cp + cplen > eof)
+			if (cp + cplen > eob)
 				return 0; // invalid
 			seen_uc = 1;
 		}
 		cp = cp + cplen;
-	} while (cp != eof);
+	} while (cp != eob);
 	return seen_uc;
 }
 
+// Find the length in unicode characters of a UTF-8 string in curfile starting
+// at start with length hunklen.
+static int
+uclen(char *contents, off_t len, off_t start, off_t hunklen)
+{
+	off_t bp;
+	int ulen, cplen;
+	unsigned char *cp = (unsigned char *)contents;
+	
+	bp = start;
+	ulen = 0;
+
+	// Scan the file starting from the specified offset
+	while (bp != start + hunklen && bp != len)
+	{
+		if (cp[bp] < 0x80)
+		{
+			cplen = 1;
+		}
+		else
+		{
+			if (cp[bp] < 0xC0)
+				gofer_fatal("coding error 2 in unicode_fixups");
+			else if (cp[bp] < 0xE0)
+				cplen = 2;
+			else if (cp[bp] < 0xF0)
+				cplen = 3;
+			else if (cp[bp] >= 0xF8)
+				cplen = 1; // should never happen, already validated.
+			if (bp > len)
+				gofer_fatal("coding error in unicode_fixups");
+		}
+		bp = bp + cplen;
+		ulen++;
+	}
+	return ulen;
+}
+
+// Compare two points in the unicode fixups array on the basis of the file position
+// they reference.
+static int
+compare_points(const void *ap, const void *bp)
+{
+	const off_t *a = ap;
+	const off_t *b = bp;
+
+	if (*a < *b)
+		return -1;
+	else if (*b < *a)
+		return 1;
+	else
+		return 0;
+}
+
 void
-unicode_fixups(char *contents, int len, search_terms_t *st, int nterms)
+unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 {
 	int i, j, k;
-	int num_points;
+	int num_points = 0;
 	st_match_t *mp;
 	off_t **points;
+	unsigned char *cp = (unsigned char *)contents;
 
-	int bp = 0;
+	off_t bp = 0, up = 0;
 	int cplen = 1;
 
 	// Count the number of matches.
 	for (i = 0; i < nterms; i++)
 	{
-		for (mp = st[nterms]; mp; mp = mp->next)
+		// First matchset contains <curmatch> matches; subsequent ones are full to STM_LIMIT.
+		num_points += st[i].curmatch / 3;
+		for (mp = st[i].matches; mp->next; mp = mp->next)
 		{
-			num_points += mp->len;
+			num_points += STM_LIMIT;
 		}
 	}
 
@@ -103,12 +160,14 @@ unicode_fixups(char *contents, int len, search_terms_t *st, int nterms)
 	k = 0;
 	for (i = 0; i < nterms; i++)
 	{
-		for (mp = st[nterms]; mp; mp = mp->next)
+		int num = st[i].curmatch / 3;
+		for (mp = st[i].matches; mp; mp = mp->next)
 		{
-			for (j = 0; j < mp->len; j++)
+			for (j = 0; j < num; j++)
 			{
-				points[k++] = *mp->data[j * 3];
+				points[k++] = &mp->data[j * 3];
 			}
+			num = STM_LIMIT;
 		}
 	}
 
@@ -116,33 +175,32 @@ unicode_fixups(char *contents, int len, search_terms_t *st, int nterms)
 	qsort(points, num_points, sizeof *points, compare_points);
 
 	i = 0;
-	up = 0;
-	
+
 	// Go through the file adjusting points based on unicode offsets.
 	while (i < num_points && bp != len)
 	{
 		// Update all references to the current location in the file.
 		while (i < num_points && points[i][0] == bp)
 		{
+			points[i][1] = uclen(contents, len, points[i][0], points[i][1]);
 			points[i][0] = up;
-			// XXX adjust length as well.
 			i++;
 		}
-		if (contents[bp] < 0x80)
+		if (cp[bp] < 0x80)
 		{
-				gofer_fatal("coding error 2 in unicode_fixups");
+			cplen = 1;
 		}
 		else
 		{
-			if (contents[bp] < 0xC0)
+			if (cp[bp] < 0xC0)
 				gofer_fatal("coding error 2 in unicode_fixups");
-			else if (contents[bp] < 0xE0)
+			else if (cp[bp] < 0xE0)
 				cplen = 2;
-			else if (contents[bp] < 0xF0)
+			else if (cp[bp] < 0xF0)
 				cplen = 3;
-			else if (contents[bp] >= 0xF8)
+			else if (cp[bp] >= 0xF8)
 				cplen = 1; // should never happen, already validated.
-			if (cp + cplen > eof)
+			if (bp > len)
 				gofer_fatal("coding error in unicode_fixups");
 		}
 		bp = bp + cplen;

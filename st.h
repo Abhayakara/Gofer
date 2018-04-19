@@ -169,8 +169,8 @@ int process_file(const char *filename, char *contents, off_t len,
 				 dumpfunc_t func, void *obj, st_match_type_t exact);
 
 /* unicode.c */
-int is_unicode(char *contents, int len);
-void unicode_fixups(char *contents, int len, search_terms_t *st, int nterms);
+int is_unicode(char *contents, off_t len);
+void unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms);
 
 
 /* These need to be defined somewhere... */
