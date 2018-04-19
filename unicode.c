@@ -115,12 +115,12 @@ uclen(char *contents, off_t len, off_t start, off_t hunklen)
 static int
 compare_points(const void *ap, const void *bp)
 {
-	const off_t *a = ap;
-	const off_t *b = bp;
+	const off_t **a = ap;
+	const off_t **b = bp;
 
-	if (*a < *b)
+	if (*a[0] < *b[0])
 		return -1;
-	else if (*b < *a)
+	else if (*b[0] < *a[0])
 		return 1;
 	else
 		return 0;
@@ -193,7 +193,7 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 		else
 		{
 			if (cp[bp] < 0xC0)
-				gofer_fatal("coding error 2 in unicode_fixups");
+				gofer_fatal("coding error 1 in unicode_fixups");
 			else if (cp[bp] < 0xE0)
 				cplen = 2;
 			else if (cp[bp] < 0xF0)
@@ -201,14 +201,16 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 			else if (cp[bp] >= 0xF8)
 				cplen = 1; // should never happen, already validated.
 			if (bp > len)
-				gofer_fatal("coding error in unicode_fixups");
+				gofer_fatal("coding error 2 in unicode_fixups");
 		}
+		if (i < num_points && bp + cplen > points[i][0])
+			gofer_fatal("coding error 3 in unicode_fixups");
 		bp = bp + cplen;
 		up++;
 	}
 
 	if (i < num_points)
-		gofer_fatal("coding error in unicode_fixups.");
+		gofer_fatal("coding error 4 in unicode_fixups.");
 	free(points);
 }
 
