@@ -1,0 +1,6 @@
+.DS_Store
+Gofer.xcodeproj/project.xcworkspace/
+Gofer.xcodeproj/xcuserdata/
+build/
+gofer
+installers/
