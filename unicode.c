@@ -115,8 +115,8 @@ uclen(char *contents, off_t len, off_t start, off_t hunklen)
 static int
 compare_points(const void *ap, const void *bp)
 {
-	const off_t **a = ap;
-	const off_t **b = bp;
+	const off_t * const *a = ap;
+	const off_t * const *b = bp;
 
 	if (*a[0] < *b[0])
 		return -1;

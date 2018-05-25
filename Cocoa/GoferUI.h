@@ -203,6 +203,9 @@
 - (void)writeDirDefaults;
 - (void)highlightMatchesAt: (matchzone_t *)mz  status: (BOOL)status;
 - (void)setRangeHighlight: (NSRange)range status: (BOOL)status;
+- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem;
+- (BOOL)tabView:(NSTabView *)tabView shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem;
+- (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem;
 @end
 
 /* Local Variables:  */

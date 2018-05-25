@@ -46,19 +46,9 @@ combine(st_expr_t **ep)
     case ste_near:
     case ste_near_lines:
     case ste_and:
+    case ste_not:
 		combine(&expr->subexpr.exprs[0]);
 		combine(&expr->subexpr.exprs[1]);
-		break;
-      
-		/* Single subexpression. */
-    case ste_not:
-		if (expr->subexpr.expr)
-			combine(&expr->subexpr.expr);
-		else
-		{
-			free_expr(expr);
-			*ep = 0;
-		}
 		break;
 
     case ste_or:

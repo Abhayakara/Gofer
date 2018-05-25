@@ -106,8 +106,9 @@
 {
 	printf("windowDidLoad\n");
 	[super windowDidLoad];
-	printf("selected the searchSettings tabView.\n");
+	printf("selecting the searchSettings tabView.\n");
 	[tabView selectTabViewItem: searchSettingTab];
+	[tabView setNeedsDisplay: TRUE];
 }
 
 - (void)windowWillLoad
@@ -257,10 +258,11 @@
 	} else
 		setlinebuf(debug_log);
 	[tabView setDelegate: self];
-	printf("selecting tabView index 0\n");
+	[tabView selectFirstTabViewItem: self];
 	[win makeFirstResponder: inputBox0];
 
 	[self constrainUIToDisplay];
+	[tabView setNeedsDisplay: TRUE];
 }
 
 - (void)constrainUIToDisplay
@@ -1129,12 +1131,15 @@ distanceAction: (id)sender
 	}
 }
   
-- (BOOL)          tabView:(NSTabView *)tabView
+- (BOOL)          tabView:(NSTabView *)tabView 
   shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-	printf("shouldSelectTabViewItem: %s\n", [[tabViewItem label] UTF8String]);
 	if (initialized)
+	{
+		printf("shouldSelectTabViewItem %s: YES!\n", [[tabViewItem label] UTF8String]);
 		return YES;
+	}
+	printf("shouldSelectTabViewItem %s: NO!\n", [[tabViewItem label] UTF8String]);
 	return NO;
 }
 

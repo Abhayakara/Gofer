@@ -73,15 +73,8 @@ print_expr(st_expr_t *expr)
 		goto two;
         
     case ste_not:
-		sprintf(tbuf, "(not ");
-		r = print_expr(expr->subexpr.expr);
-		len = strlen(r) + strlen(tbuf) + 3;
-		rv = malloc(len);
-		if (!rv)
-			gofer_fatal("No memory for combined printed expr.");
-		sprintf(rv, "%s%s)", tbuf, r);
-		free(r);
-		break;
+		sprintf(tbuf, "(but-not ");
+		goto two;
         
     case ste_term:
 		rv = malloc(expr->subexpr.term->len + 3);
@@ -123,15 +116,11 @@ free_expr(st_expr_t *expr)
     case ste_near:
     case ste_or:
     case ste_and:
+    case ste_not:
 		if (expr->subexpr.exprs[0])
 			free_expr(expr->subexpr.exprs[0]);
 		if (expr->subexpr.exprs[1])
 			free_expr(expr->subexpr.exprs[1]);
-		break;
-
-    case ste_not:
-		if (expr->subexpr.expr)
-			free_expr(expr->subexpr.expr);
 		break;
 
     case ste_term:
@@ -188,12 +177,9 @@ copy_expr(st_expr_t *expr)
     case ste_near:
     case ste_or:
     case ste_and:
+    case ste_not:
 		new->subexpr.exprs[0] = copy_expr(expr->subexpr.exprs[0]);
 		new->subexpr.exprs[1] = copy_expr(expr->subexpr.exprs[1]);
-		break;
-
-    case ste_not:
-		new->subexpr.expr = copy_expr(expr->subexpr.expr);
 		break;
 
     case ste_term:
@@ -222,12 +208,9 @@ count_search_terms(st_expr_t *expr)
     case ste_near:
     case ste_or:
     case ste_and:
+    case ste_not:
 		return (count_search_terms(expr->subexpr.exprs[0]) +
 				count_search_terms(expr->subexpr.exprs[1]));
-		break;
-
-    case ste_not:
-		return count_search_terms(expr->subexpr.expr);
 		break;
 
     case ste_term:
@@ -252,12 +235,9 @@ flatten_search_terms(search_term_t *terms, int *n, st_expr_t *expr)
     case ste_near:
     case ste_or:
     case ste_and:
+    case ste_not:
 		flatten_search_terms(terms, n, expr->subexpr.exprs[0]);
 		flatten_search_terms(terms, n, expr->subexpr.exprs[1]);
-		break;
-
-    case ste_not:
-		flatten_search_terms(terms, n, expr->subexpr.expr);
 		break;
 
     case ste_term:
