@@ -32,6 +32,7 @@
 		DF7553FD136DE8BB00DDF1FE /* GoferTests.h in Resources */ = {isa = PBXBuildFile; fileRef = DF7553FC136DE8BB00DDF1FE /* GoferTests.h */; };
 		DF7553FF136DE8BB00DDF1FE /* GoferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553FE136DE8BB00DDF1FE /* GoferTests.m */; };
 		DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */ = {isa = PBXBuildFile; fileRef = DF755408136DEA7000DDF1FE /* Gofer.icns */; };
+		DF9CEC2A20BA1A4D0022C685 /* not.c in Sources */ = {isa = PBXBuildFile; fileRef = DF9CEC2920BA1A4D0022C685 /* not.c */; };
 		DFD6477F16D5CA1B00016AAE /* WinDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD6477E16D5CA1B00016AAE /* WinDelegate.m */; };
 		DFFBC798195FB201007412CF /* GoferUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFFBC797195FB201007412CF /* GoferUI.xib */; };
 /* End PBXBuildFile section */
@@ -83,6 +84,7 @@
 		DF7553FC136DE8BB00DDF1FE /* GoferTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoferTests.h; sourceTree = "<group>"; };
 		DF7553FE136DE8BB00DDF1FE /* GoferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoferTests.m; sourceTree = "<group>"; };
 		DF755408136DEA7000DDF1FE /* Gofer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Gofer.icns; sourceTree = "<group>"; };
+		DF9CEC2920BA1A4D0022C685 /* not.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = not.c; sourceTree = SOURCE_ROOT; };
 		DFD6477D16D5CA1B00016AAE /* WinDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinDelegate.h; sourceTree = "<group>"; };
 		DFD6477E16D5CA1B00016AAE /* WinDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WinDelegate.m; sourceTree = "<group>"; };
 		DFFBC797195FB201007412CF /* GoferUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GoferUI.xib; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 		DF2B5CA71370D34900122E43 /* libgofer */ = {
 			isa = PBXGroup;
 			children = (
+				DF9CEC2920BA1A4D0022C685 /* not.c */,
 				DF1E6BE720880502002856F1 /* unicode.c */,
 				DF2B5D881370D3CC00122E43 /* combine.c */,
 				DF2B5D891370D3CC00122E43 /* errwarn.c */,
@@ -340,6 +343,7 @@
 				DF2B5D9B1370D3CC00122E43 /* near.c in Sources */,
 				DF2B5D9D1370D3CC00122E43 /* searchfile.c in Sources */,
 				DF2B5D9E1370D3CC00122E43 /* tree.c in Sources */,
+				DF9CEC2A20BA1A4D0022C685 /* not.c in Sources */,
 				DF4E920513AD2A1D007F3E0F /* GoferAppDelegate.m in Sources */,
 				DF4E920613AD2A1D007F3E0F /* main.m in Sources */,
 				DF57EBD416D2F0FC00E09039 /* GoferUI.m in Sources */,

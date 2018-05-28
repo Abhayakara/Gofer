@@ -36,24 +36,37 @@
  */
 
 void
-combine(st_expr_t **ep)
+combine(st_expr_t **ep, char *contents, off_t len, st_match_type_t exact)
 {
 	st_expr_t *expr = *ep;
 
-	switch (expr->type)
-    {
+	switch (expr->type) {
+		/* We need to combine the LHS of the but-not expression, and then
+		 * run the exclusion on it.
+		 */
+    case ste_not:
+		combine(&expr->subexpr.exprs[0], contents, len, exact);
+		// This can result in the expression being nulled out if there were no matches.
+		// Don't dump core when this happens.
+		if (expr->subexpr.exprs[0] == NULL) {
+			free_expr(expr);
+			*ep = NULL;
+		} else {
+			do_exclude(expr, contents, len, exact);
+		}
+		break;
+
 		/* Combine the two subexpressions. */
     case ste_near:
     case ste_near_lines:
     case ste_and:
-    case ste_not:
-		combine(&expr->subexpr.exprs[0]);
-		combine(&expr->subexpr.exprs[1]);
+		combine(&expr->subexpr.exprs[0], contents, len, exact);
+		combine(&expr->subexpr.exprs[1], contents, len, exact);
 		break;
 
     case ste_or:
-		combine(&expr->subexpr.exprs[0]);
-		combine(&expr->subexpr.exprs[1]);
+		combine(&expr->subexpr.exprs[0], contents, len, exact);
+		combine(&expr->subexpr.exprs[1], contents, len, exact);
 		if (expr->subexpr.exprs[0] &&
 			expr->subexpr.exprs[0]->type == ste_matchset &&
 			expr->subexpr.exprs[1] &&
@@ -108,7 +121,7 @@ term_to_matchset(st_expr_t **ep)
 	/* Figure out how many matches there are. */
 	count = term->curmatch;
 	for (mp = term->matches->next; mp; mp = mp->next)
-		count += STM_LIMIT * 3;
+		count += STM_LIMIT;
 
 	if (count == 0)
     {
@@ -118,7 +131,7 @@ term_to_matchset(st_expr_t **ep)
     }
 
 	/* Allocate the buffer. */
-	ms = malloc((sizeof *ms) + count * (sizeof ms->data[0]));
+	ms = malloc((sizeof *ms) + count * (sizeof ms->m));
 	if (!ms)
 		gofer_fatal("no memory for matchset.");
 
@@ -138,13 +151,13 @@ term_to_matchset(st_expr_t **ep)
 		count -= len;
 		if (count < 0)
 			gofer_fatal("too long in term_to_matchset");
-		if (sizeof ms->data[0] != sizeof mp->data[0])
+		if (sizeof ms->m[0] != sizeof mp->m[0])
 			gofer_fatal("sizeof glitch: ms data and mp data are different sizes.");
-		memcpy(&ms->data[count], mp->data, len * sizeof mp->data[0]);
+		memcpy(&ms->m[count], &mp->m[0], len * sizeof mp->m[0]);
 		/* Any subsequent matchsets after the first in the list will be full,
 		 * so set len to the length of a full matchset buffer.
 		 */
-		len = STM_LIMIT * 3;
+		len = STM_LIMIT;
 		free(mp);
 		mp = 0;
     }
@@ -187,7 +200,7 @@ combine_matchsets(st_expr_t **ep, st_expr_t **lep, st_expr_t **rep)
 	count = lm->count + rm->count;
 
 	/* Allocate the buffer. */
-	ms = malloc((sizeof *ms) + count * sizeof ms->data[0]);
+	ms = malloc((sizeof *ms) + (count - 1) * sizeof (ms->m[0]));
 	if (!ms)
 		gofer_fatal("no memory for matchset.");
 	memset(ms, 0, sizeof *ms);
@@ -199,18 +212,14 @@ combine_matchsets(st_expr_t **ep, st_expr_t **lep, st_expr_t **rep)
 	while (ix < count)	/* This should be safe unless the algorithm's wrong. */
     {
 		if (lix != lm->count &&
-			(rix == rm->count || lm->data[lix] < rm->data[rix])) {
-			ms->data[ix] = lm->data[lix];
-			ms->data[ix + 1] = lm->data[lix + 1];
-			ms->data[ix + 2] = lm->data[lix + 2];
-			lix += 3;
+			(rix == rm->count || lm->m[lix].offset < rm->m[rix].offset)) {
+			ms->m[ix] = lm->m[lix];
+			lix++;
 		} else {
-			ms->data[ix] = rm->data[rix];
-			ms->data[ix + 1] = rm->data[rix + 1];
-			ms->data[ix + 2] = rm->data[rix + 2];
-			rix += 3;
+			ms->m[ix] = rm->m[rix];
+			rix++;
 		}
-		ix += 3;
+		ix++;
     }
 
 	/* Now get rid of the old matchsets. */

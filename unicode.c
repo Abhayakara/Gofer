@@ -115,12 +115,12 @@ uclen(char *contents, off_t len, off_t start, off_t hunklen)
 static int
 compare_points(const void *ap, const void *bp)
 {
-	const off_t * const *a = ap;
-	const off_t * const *b = bp;
+	const match_entry_t *a = ap;
+	const match_entry_t *b = bp;
 
-	if (*a[0] < *b[0])
+	if (a->offset < b->offset)
 		return -1;
-	else if (*b[0] < *a[0])
+	else if (b->offset < a->offset)
 		return 1;
 	else
 		return 0;
@@ -132,7 +132,7 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 	int i, j, k;
 	int num_points = 0;
 	st_match_t *mp;
-	off_t **points;
+	match_entry_t **points;
 	unsigned char *cp = (unsigned char *)contents;
 
 	off_t bp = 0, up = 0;
@@ -142,8 +142,8 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 	for (i = 0; i < nterms; i++)
 	{
 		// First matchset contains <curmatch> matches; subsequent ones are full to STM_LIMIT.
-		num_points += st[i].curmatch / 3;
-		for (mp = st[i].matches; mp->next; mp = mp->next)
+		num_points += st[i].curmatch;
+		for (mp = st[i].matches; mp && mp->next; mp = mp->next)
 		{
 			num_points += STM_LIMIT;
 		}
@@ -160,12 +160,12 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 	k = 0;
 	for (i = 0; i < nterms; i++)
 	{
-		int num = st[i].curmatch / 3;
+		int num = st[i].curmatch;
 		for (mp = st[i].matches; mp; mp = mp->next)
 		{
 			for (j = 0; j < num; j++)
 			{
-				points[k++] = &mp->data[j * 3];
+				points[k++] = &mp->m[j];
 			}
 			num = STM_LIMIT;
 		}
@@ -180,10 +180,11 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 	while (i < num_points && bp != len)
 	{
 		// Update all references to the current location in the file.
-		while (i < num_points && points[i][0] == bp)
+		while (i < num_points && points[i]->offset == bp)
 		{
-			points[i][1] = uclen(contents, len, points[i][0], points[i][1]);
-			points[i][0] = up;
+			points[i]->unicode_length = uclen(contents, len,
+											  points[i]->offset, points[i]->length);
+			points[i]->unicode_offset = up;
 			i++;
 		}
 		if (cp[bp] < 0x80)
@@ -203,7 +204,7 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 			if (bp > len)
 				gofer_fatal("coding error 2 in unicode_fixups");
 		}
-		if (i < num_points && bp + cplen > points[i][0])
+		if (i < num_points && bp + cplen > points[i]->offset)
 			gofer_fatal("coding error 3 in unicode_fixups");
 		bp = bp + cplen;
 		up++;

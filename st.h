@@ -48,6 +48,14 @@
 extern "C" {
 #endif
 
+typedef struct match_entry {
+	off_t offset;
+	off_t length;
+	off_t line;
+	off_t unicode_offset;
+	off_t unicode_length;
+} match_entry_t;
+
 /* Buffer containing matches found for a search term in a file.
  * We record the character position in the file, and also the line it
  * appeared on, so that we can do proximity searches based on line
@@ -56,7 +64,7 @@ extern "C" {
 
 typedef struct stmbuf {
 	struct stmbuf *next;
-	off_t data[STM_LIMIT * 3];
+	match_entry_t m[STM_LIMIT];
 } st_match_t;
 
 /* Finalized set of matches after the search is complete and we are
@@ -65,7 +73,7 @@ typedef struct stmbuf {
 
 typedef struct stmset {
 	int count;
-	off_t data[1];		/* We just allocate the right amount of space. */
+	match_entry_t m[1]; /* arbitrarily long */
 } matchset_t;
 
 /* Search term.  Search terms are just strings.  A search term match
@@ -118,9 +126,8 @@ typedef struct sten {
 
 typedef struct stcs {
 	struct stcs *next;
-	off_t cp[4];
-	off_t lp[2];
-} combineset_t;
+	match_entry_t pair[2];
+} match_pair_t;
 
 typedef void (*dumpfunc_t)(void *obj, const char *filename,
 						   char *contents, off_t content_length,
@@ -136,20 +143,18 @@ typedef int (*filefunc_t)(void *obj, const char *filename);
 int searchfile(const char *filename, search_term_t *terms, int nterms,
 			   const char *file, off_t flen, st_match_type_t exact);
 void new_st_matchbuf(search_term_t *st);
-void combine(st_expr_t **ep);
+int cmp(const char *a, const char *b, size_t len, const char *limit);
+int casecmp(const char *a, const char *b, size_t len, const char *limit);
+	
 
 /* near.c */
-combineset_t *eval_near(st_expr_t **ep);
-combineset_t * compute_near(st_expr_t *expr,
-							matchset_t *lex, matchset_t *linc,
-							matchset_t *rex, matchset_t *rinc);
-combineset_t *do_exclude(st_expr_t *expr, combineset_t *orig,
-						 matchset_t *exclusions);
-combineset_t *reverse_combineset(combineset_t *cs, combineset_t *prev);
-combineset_t *merge_combineset(combineset_t *cs);
+match_pair_t *eval_near(st_expr_t **ep);
+match_pair_t *compute_near(st_expr_t *expr);
+match_pair_t *reverse_combineset(match_pair_t *cs, match_pair_t *prev);
+match_pair_t *merge_combineset(match_pair_t *cs);
 
 /* combine.c */
-void combine(st_expr_t **ep);
+void combine(st_expr_t **ep, char *contents, off_t len, st_match_type_t exact);
 void term_to_matchset(st_expr_t **ep);
 void combine_matchsets(st_expr_t **ep, st_expr_t **lep, st_expr_t **rep);
 
@@ -158,6 +163,10 @@ char *print_expr(st_expr_t *expr);
 void free_expr(st_expr_t *expr);
 st_expr_t *copy_expr(st_expr_t *expr);
 int extract_search_terms(search_term_t **terms, st_expr_t *root);
+
+/* exclude.c */
+void do_exclude(st_expr_t *not_expr, char *contents, off_t len, 
+				st_match_type_t exact);
 
 /* tree.c */
 extern int abortSearch;

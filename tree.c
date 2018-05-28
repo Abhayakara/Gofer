@@ -164,7 +164,7 @@ process_file(const char *filename, char *contents, off_t len,
 			 dumpfunc_t func, void *obj, st_match_type_t exact)
 {
 	st_expr_t *copy;
-	combineset_t *cset;
+	match_pair_t *cset;
 	off_t line;
 	off_t linecp;
 	int hits = 0;
@@ -181,20 +181,23 @@ process_file(const char *filename, char *contents, off_t len,
 	}
   
 	// If the file is unicode, we need to do fixups.
+	// Any comparisons against file contents have to happen before these
+	// fixups have been done.
 	if (is_unicode(contents, len))
 	{
 		unicode_fixups(contents, len, terms, n);
 	}
 
 	/* Combine common terms. */
-	combine(&copy);
+	// XXX is there a reason why this WAS before unicode_fixups()?
+	combine(&copy, contents, len, exact);
   
 	/* Evaluate nearness expressions */
 	cset = eval_near(&copy);
   
 	if (cset)
 	{
-		combineset_t *next;
+		match_pair_t *next;
       
 		cset = reverse_combineset(cset, 0);
       
@@ -205,16 +208,15 @@ process_file(const char *filename, char *contents, off_t len,
 		{
 			next = cset->next;
 			func(obj, filename, contents, len,
-				 cset->lp[0], cset->lp[1],
-				 cset->cp[0], cset->cp[2], cset->cp[1], cset->cp[3],
+				 cset->pair[0].line, cset->pair[1].line,
+				 cset->pair[0].unicode_offset, cset->pair[0].unicode_length,
+				 cset->pair[1].unicode_offset, cset->pair[1].unicode_length,
 				 &line, &linecp);
 			free(cset);
 			cset = 0;
 			hits++;
 		}
-	}
-	else
-	{
+	} else {
 		matchset_t *ms;
       
 		if (copy && copy->type == ste_matchset)
@@ -226,28 +228,32 @@ process_file(const char *filename, char *contents, off_t len,
 			linecp = 0;
 	  
 			ms = copy->subexpr.set;
-			for (j = 0; j < ms->count; j += 3)
+			for (j = 0; j < ms->count; j++)
 			{
 				/* This is a little goo that makes sure that if we have
 				 * two matches on the same line or on subsequent lines,
 				 * we don't print the same set of lines twice.
 				 */
 				if (k == -1) {
-					cp = ms->data[j];
-					k = ms->data[j + 2];
+					cp = ms->m[j].unicode_offset;
+					k = ms->m[j].line;
 				}
 #if 0
-				if (j + 3 != ms->count && ms->data[j + 4] < k + 1)
+				if (j + 1 != ms->count && ms->m[j + 1].line < k + 1)
 					continue;
 #endif
 				func(obj, filename, contents, len,
-					 k ? k - 1 : k,  ms->data[j + 2] + 1,
-					 cp, ms->data[j + 1], 0, 0,
+					 k ? k - 1 : k,  ms->m[j].line + 1,
+					 cp, ms->m[j].unicode_length, 0, 0,
 					 &line, &linecp);
 				k = -1;
 				hits++;
 			}
-		}
+		} else {
+			if (copy) {
+				printf("encountered non-matchset in process_file()\n");
+			}
+		}		
 	}		
 	if (copy)
 		free_expr(copy);

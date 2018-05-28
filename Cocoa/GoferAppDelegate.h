@@ -41,9 +41,12 @@
 	NSMenuItem *winMenu9;
 	NSArray *winMenus;
 	NSMenu *winMenu;
+	NSFont *displayFont;
 }
 
 @property NSArray *winMenus;
+
+@property(retain) NSFontManager *displayFont;
 
 @property(retain) IBOutlet NSMenu *winMenu;
 @property(retain) IBOutlet NSMenuItem *separatorMark;
@@ -64,6 +67,8 @@
 - (IBAction)nextMatch: (id)sender;
 - (IBAction)prevMatch: (id)sender;
 - (IBAction)close: (id)sender;
+- (IBAction)fontClicked:(id)sender;
+- (void)changeFont:(id)sender;
 
 @end
 

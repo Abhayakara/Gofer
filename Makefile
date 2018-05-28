@@ -2,8 +2,10 @@ CFLAGS=-g -gdwarf-2 -Wall -Werror -arch x86_64
 
 TARGETS=	libgofer.a gofer
 
-LIBSRCS=tree.c near.c searchfile.c combine.c expr.c filelist.c errwarn.c
-LIBOBJS=tree.o near.o searchfile.o combine.o expr.o filelist.o errwarn.o
+LIBSRCS=tree.c near.c searchfile.c combine.c expr.c filelist.c errwarn.c \
+	unicode.c not.c
+LIBOBJS=tree.o near.o searchfile.o combine.o expr.o filelist.o errwarn.o \
+	unicode.o not.o
 
 RANLIB=ranlib
 

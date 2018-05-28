@@ -37,9 +37,9 @@
 #include "lex.h"
 
 static void
-dump_range(void *obj, const char *filename, char *contents, int max,
-		   int first_line, int last_line, int first_char, int first_len,
-		   int last_char, int last_len, int *cur_line, int *cur_char);
+dump_range(void *obj, const char *filename, char *contents, off_t content_length,
+		   off_t first_line, off_t last_line, off_t first_char, off_t first_len,
+		   off_t last_char, off_t last_len, off_t *cur_line, off_t *cur_char);
 
 int
 main(int argc, char **argv)
@@ -105,14 +105,14 @@ main(int argc, char **argv)
  * the whole file from the beginning every time.
  */
 static void
-dump_range(void *obj, const char *filename, char *contents, int max,
-		   int first_line, int last_line, int first_char, int first_len,
-		   int last_char, int last_len, int *cur_line, int *cur_char)
+dump_range(void *obj, const char *filename, char *contents, off_t max,
+		   off_t first_line, off_t last_line, off_t first_char, off_t first_len,
+		   off_t last_char, off_t last_len, off_t *cur_line, off_t *cur_char)
 {
-	int cl = *cur_line;
-	int cc  = *cur_char;
+	off_t cl = *cur_line;
+	off_t cc  = *cur_char;
 #if 0
-	int tmp;
+	off_t tmp;
 	if (first_line > last_line)
     {
 		tmp = first_line;
@@ -146,7 +146,7 @@ dump_range(void *obj, const char *filename, char *contents, int max,
     }
       
 	/* Now print it out. */
-	printf("File %s, lines %d-%d:\n", filename, first_line, last_line);
+	printf("File %s, lines %lld-%lld:\n", filename, first_line, last_line);
 	fwrite(&contents[*cur_char], cc - *cur_char, 1, stdout);
 	printf("\n");
 }

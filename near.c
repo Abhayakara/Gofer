@@ -31,13 +31,11 @@
 #include "st.h"
 
 
-combineset_t *
+match_pair_t *
 eval_near(st_expr_t **ep)
 {
 	st_expr_t *expr = *ep;
-	matchset_t *lex, *rex;	/* Exclusion sets. */
-	matchset_t *linc, *rinc;	/* Inclusion sets. */
-	combineset_t *rv = 0;
+	match_pair_t *rv = 0;
 
 	if (!expr)
 		return 0;
@@ -60,80 +58,15 @@ eval_near(st_expr_t **ep)
 		/* At some point we should make it so that an "or" here combines two
 		 * combinesets.   Not too hard, do it soon.
 		 */
+		break;
 
     case ste_near:
     case ste_near_lines:
-		/* There's two possibilities for either side of the near expression.
-		 * The first is that there's just a matchset.   The second is that
-		 * there's an "and" subexpression, one side of which is a "not"
-		 * subexpression, and the other side of which is a matchset.   So
-		 * we should always have a matchset on both sides, and may have
-		 * a second matchset on either side that's supposed to exclude
-		 * something.
-		 *
+		/* Both sides of a "near" expression should be matchsets.
 		 * We don't check for impossible combinations here - the parser
 		 * should have prevented them from happening.
 		 */
-		rex = lex = linc = rinc = 0;
-		if (expr->subexpr.exprs[0] &&
-			expr->subexpr.exprs[0]->type == ste_and)
-		{
-			st_expr_t *left, *right;
-			left = expr->subexpr.exprs[0]->subexpr.exprs[0];
-			right = expr->subexpr.exprs[0]->subexpr.exprs[1];
-
-			if (left && left->type == ste_not)
-			{
-				if (left->subexpr.expr &&
-					left->subexpr.expr->type == ste_matchset)
-					lex = left->subexpr.expr->subexpr.set;
-			}
-			else if (left && left->type == ste_matchset)
-				linc = left->subexpr.set;
-
-			if (right && right->type == ste_not)
-			{
-				if (right->subexpr.expr &&
-					right->subexpr.expr->type == ste_matchset)
-					lex = right->subexpr.expr->subexpr.set;
-			}
-			else if (right && right->type == ste_matchset)
-				linc = right->subexpr.set;
-		}
-		else if (expr->subexpr.exprs[0] &&
-				 expr->subexpr.exprs[0]->type == ste_matchset)
-			linc = expr->subexpr.exprs[0]->subexpr.set;
-
-		if (expr->subexpr.exprs[1] &&
-			expr->subexpr.exprs[1]->type == ste_and)
-		{
-			st_expr_t *left, *right;
-			left = expr->subexpr.exprs[1]->subexpr.exprs[0];
-			right = expr->subexpr.exprs[1]->subexpr.exprs[1];
-
-			if (left && left->type == ste_not)
-			{
-				if (left->subexpr.expr &&
-					left->subexpr.expr->type == ste_matchset)
-					rex = left->subexpr.expr->subexpr.set;
-			}
-			else if (left && left->type == ste_matchset)
-				rinc = left->subexpr.set;
-
-			if (right && right->type == ste_not)
-			{
-				if (right->subexpr.expr &&
-					right->subexpr.expr->type == ste_matchset)
-					rex = right->subexpr.expr->subexpr.set;
-			}
-			else if (right && right->type == ste_matchset)
-				rinc = right->subexpr.set;
-		}
-		else if (expr->subexpr.exprs[1] &&
-				 expr->subexpr.exprs[1]->type == ste_matchset)
-			rinc = expr->subexpr.exprs[1]->subexpr.set;
-
-		rv = compute_near(expr, lex, linc, rex, rinc);
+		rv = compute_near(expr);
 		break;
 
     case ste_term:
@@ -150,30 +83,45 @@ eval_near(st_expr_t **ep)
  * are near instances in the negative matchsets.
  */
 
-combineset_t *
-compute_near(st_expr_t *expr,
-			 matchset_t *lex, matchset_t *linc,
-			 matchset_t *rex, matchset_t *rinc)
+match_pair_t *
+compute_near(st_expr_t *expr)
 {
-	combineset_t *rv = 0, *tmp;
+	matchset_t *linc, *rinc;
+	match_pair_t *rv = 0, *tmp;
 	int lix = 0;
 	int rix = 0;
 
-	if (!linc || !rinc)
-		return 0;
+	if (expr->subexpr.exprs[0] == NULL) {
+		return NULL;
+	}
+
+	if (expr->subexpr.exprs[1] == NULL) {
+		return NULL;
+	}
+
+	if (expr->subexpr.exprs[0]->type != ste_matchset ||
+		expr->subexpr.exprs[1]->type != ste_matchset) {
+		printf("compute_near received non-matchset exprs: %d %d\n",
+			   expr->subexpr.exprs[0]->type != ste_matchset,
+			   expr->subexpr.exprs[1]->type != ste_matchset);
+		return NULL;
+	}
+	
+	linc = expr->subexpr.exprs[0]->subexpr.set;
+	rinc = expr->subexpr.exprs[1]->subexpr.set;
 
 	while (lix < linc->count && rix < rinc->count)
     {
 		off_t diff, cdiff;
      
 		/* Diff in char positions. */
-		cdiff = linc->data[lix] - rinc->data[rix];
+		cdiff = linc->m[lix].offset - rinc->m[rix].offset;
 
 		/* Diff in line positions. */
 		if (expr->type == ste_near)
 			diff = cdiff;
 		else
-			diff = linc->data[lix + 2] - rinc->data[rix + 2];
+			diff = linc->m[lix].line - rinc->m[rix].line;
 
 		/* We want the absolute difference. */
 		if (diff < 0)
@@ -191,28 +139,20 @@ compute_near(st_expr_t *expr,
 		{
 			if (cdiff != 0)
 			{
-				tmp = malloc(sizeof (combineset_t));
+				tmp = malloc(sizeof (match_pair_t));
 				if (!tmp)
 					gofer_fatal("no memory for combineset.");
 	      
 				/* Remember the character and line positions. */
-				if (linc->data[lix] < rinc->data[rix])
+				if (linc->m[lix].offset < rinc->m[rix].offset)
 				{
-					tmp->cp[0] = linc->data[lix];
-					tmp->cp[1] = rinc->data[rix];
-					tmp->cp[2] = linc->data[lix + 1];
-					tmp->cp[3] = rinc->data[rix + 1];
-					tmp->lp[0] = linc->data[lix + 2];
-					tmp->lp[1] = rinc->data[rix + 2];
+					tmp->pair[0] = linc->m[lix];
+					tmp->pair[1] = rinc->m[rix];
 				}
 				else
 				{
-					tmp->cp[0] = rinc->data[rix];
-					tmp->cp[1] = linc->data[lix];
-					tmp->cp[2] = rinc->data[rix + 1];
-					tmp->cp[3] = linc->data[lix + 1];
-					tmp->lp[0] = rinc->data[rix + 2];
-					tmp->lp[1] = linc->data[lix + 2];
+					tmp->pair[0] = rinc->m[rix];
+					tmp->pair[1] = linc->m[lix];
 				}
 
 				/* Add it to the linked list. */
@@ -220,8 +160,8 @@ compute_near(st_expr_t *expr,
 				rv = tmp;
 
 				/* Skip to the next set of matches. */
-				lix += 3;
-				rix += 3;
+				lix++;
+				rix++;
 			}
 			else {
 				// XXX put the code to do BUT NOT here?
@@ -242,101 +182,21 @@ compute_near(st_expr_t *expr,
 			 * XXX It would be worth thinking about this some more.
 			 */
 		advance:
-			if (linc->data[lix] < rinc->data[rix])
-				lix += 3;
+			if (linc->m[lix].offset < rinc->m[rix].offset)
+				lix++;
 			else
-				rix += 3;
+				rix++;
 		}
     }
-  
-	/* Now eliminate exclusions that are "near" the matches we found. */
-	if (lex)
-		rv = do_exclude(expr, rv, lex);
-	if (rex)
-		rv = do_exclude(expr, rv, rex);
 	return merge_combineset(rv);
 }
 
-/* Given a combineset and a matchset, exclude all elements in the combineset
- * that are near elements in the matchset.   The matchset is sorted normally,
- * and the combineset is sorted in reverse.
- */
+/* Reverse a linked list of match_pair_t's. */
 
-combineset_t *
-do_exclude(st_expr_t *expr, combineset_t *orig, matchset_t *exclusions)
+match_pair_t *
+reverse_combineset(match_pair_t *cs, match_pair_t *prev)
 {
-	int i, j;
-	combineset_t **cp, *cs, *head = orig;
-
-	/* The combineset is sorted in reverse order, so we'll just walk
-	 * backward through the exclusion set looking for instances of
-	 * proximity.
-	 */
-	i = exclusions->count - 3;
-	cp = &head;
-	cs = *cp;
-
-	while (i >= 0 && cs)
-    {
-		off_t diff;
-     
-		/* There are two positions in a combineset, and proximity
-		 * to either will result in elimination.
-		 */
-		for (j = 0; j < 2; j++)
-		{
-			if (expr->type == ste_near)
-				/* Diff in char positions. */
-				diff = cs->cp[j] - exclusions->data[i];
-			else
-				/* Diff in line positions. */
-				diff = cs->lp[j] - exclusions->data[i + 2];
-	  
-			/* We want the absolute difference. */
-			if (diff < 0)
-				diff = -diff;
-
-			if (diff < expr->n)
-			{
-				*cp = cs->next;
-				free(cs);
-				cs = *cp;
-
-				/* We've advanced already, so skip the code that decides
-				 * whether to advance.
-				 */
-				goto next_while;
-			}
-		}
-
-		/* Decide whether to advance on the combineset, or on the exclusion
-		 * list.   This is complicated by the fact that the combineset
-		 * is two entries combined, but it turns out not to be a problem
-		 * because the only time it would be an issue would be a case where
-		 * it would have failed the nearness test, and we wouldn't have gotten
-		 * here.
-		 */
-
-		if (cs->cp[0] > exclusions->data[i])
-		{
-			cp = &cs->next;
-			cs = *cp;
-		}
-		else
-			i -= 3;
-    next_while:
-		;
-    }
-
-	return head;
-}
-
-/* Reverse a linked list of combineset_t's. */
-
-combineset_t *
-reverse_combineset(combineset_t *cs, combineset_t *prev)
-{
-	combineset_t *cur;
+	match_pair_t *cur;
 	if (!cs)
 		return prev;
 	cur = reverse_combineset(cs->next, cs);
@@ -344,17 +204,17 @@ reverse_combineset(combineset_t *cs, combineset_t *prev)
 	return cur;
 }
 
-combineset_t *
-merge_combineset(combineset_t *cs)
+match_pair_t *
+merge_combineset(match_pair_t *cs)
 {
-	combineset_t *cp = cs, *next;
+	match_pair_t *cp = cs, *next;
 
 	while (cp && cp->next)
     {
-		off_t a = cp->lp[0];
-		off_t b = cp->lp[1];
-		off_t c = cp->next->lp[0];
-		off_t d = cp->next->lp[1];
+		off_t a = cp->pair[0].line;
+		off_t b = cp->pair[1].line;
+		off_t c = cp->next->pair[0].line;
+		off_t d = cp->next->pair[1].line;
 
 		/* If either endpoint of the current set is within the next set,
 		 * merge the two sets.
@@ -367,12 +227,14 @@ merge_combineset(combineset_t *cs)
 			(a <= c && c <= b) ||
 			(a <= d && d <= b))
 		{
+			// XXX this seems wrong: why are we changing the line number but not
+			// the character positions?   Preserving behavior for now. 
 			/* Pick the lower of the two low numbers. */
 			if (c < a)
-				cp->lp[0] = c;
+				cp->pair[0].line = c;
 			/* Pick the higher of the two high numbers. */
 			if (d > b)
-				cp->lp[1] = d;
+				cp->pair[1].line = d;
 			next = cp->next->next;
 			free(cp->next);
 			cp->next = next;

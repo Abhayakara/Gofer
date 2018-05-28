@@ -222,6 +222,8 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	[super awakeFromNib];
 
+	displayFont = [NSFont boldSystemFontOfSize:12];
+
 	if (!uis_setup)
     {
 		uis = [NSMutableArray new];
@@ -268,6 +270,13 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	if (topUI != nil)
 		[topUI selectionToClipBoardWithInfo: sender];
+}
+
+- (IBAction)fontClicked:(id)sender
+{
+	if (topUI != nil) {
+		[topUI startSelectingFont];
+	}
 }
 
 - (IBAction)winSwitchClicked: (id)sender

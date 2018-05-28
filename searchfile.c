@@ -38,11 +38,11 @@
  * because we're skipping excess whitespace, could be longer than the length
  * of the pattern we're matching against.
  *
- * We should optimize the hell out of this subroutine, but right now it's been
+ * We should optimize the heck out of this subroutine, but right now it's been
  * done in a mostly straightforward way, so is probably quite slow.
  */
 
-static int
+int
 cmp(const char *a, const char *b, size_t len, const char *limit)
 {
 	const char *search_start = b;
@@ -94,7 +94,7 @@ cmp_exact(const char *a, const char *b, size_t len, const char *limit)
 	return (int)(b - search_start);
 }
 
-static int
+int
 casecmp(const char *a, const char *b, size_t len, const char *limit)
 {
     const char *search_start = b;
@@ -227,15 +227,17 @@ searchfile(const char *filename, search_term_t *terms, int nterms,
 			if (terms[ti].len <= left &&								\
 				(length = comparator(terms[ti].buf, fp, terms[ti].len, fmax))) \
 			{															\
-				if (terms[ti].curmatch == STM_LIMIT * 3)				\
+				if (terms[ti].curmatch == STM_LIMIT)					\
 				{														\
 					new_st_matchbuf(&terms[ti]);						\
 					terms[ti].curmatch = 0;								\
 				}														\
-				terms[ti].matches->data[terms[ti].curmatch] = fp - file; \
-				terms[ti].matches->data[terms[ti].curmatch + 1] = length; \
-				terms[ti].matches->data[terms[ti].curmatch + 2] = line;	\
-				terms[ti].curmatch += 3;								\
+				terms[ti].matches->m[terms[ti].curmatch].offset = fp - file; \
+				terms[ti].matches->m[terms[ti].curmatch].unicode_offset = fp - file; \
+				terms[ti].matches->m[terms[ti].curmatch].length = length; \
+				terms[ti].matches->m[terms[ti].curmatch].unicode_length = length; \
+				terms[ti].matches->m[terms[ti].curmatch].line = line;	\
+				terms[ti].curmatch++;									\
 			}															\
 		}
 

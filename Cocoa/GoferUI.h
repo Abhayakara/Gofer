@@ -29,7 +29,7 @@
 #import "GoferAppDelegate.h"
 
 @interface GoferUI : NSWindowController <NSTableViewDataSource,
-											 NSTabViewDelegate>
+										 NSTabViewDelegate, NSTextViewDelegate>
 {
 @private
 	NSWindow *win;
@@ -206,6 +206,10 @@
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem;
 - (BOOL)tabView:(NSTabView *)tabView shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem;
 - (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem;
+
+- (void)startSelectingFont;
+- (void)changeFont:(id)sender;
+
 @end
 
 /* Local Variables:  */

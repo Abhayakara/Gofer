@@ -167,7 +167,7 @@
 
 	printf("wakeFromNib...\n");
 
-	[[self window] setTitle: @"Gofer 20171117.1003"];
+	[[self window] setTitle: @"Gofer 20180527c"];
 	[dirTable registerForDraggedTypes:
 			 [NSArray arrayWithObject: NSPasteboardTypeString]];
 
@@ -847,6 +847,9 @@ distanceAction: (id)sender
 		[tabView setNeedsLayout: TRUE];
 		[tabView layoutSubtreeIfNeeded];
 		[tabView updateConstraintsForSubtreeIfNeeded];
+
+		fileContentView.delegate = self;
+
 		fprintf(debug_log, "setStringValue\n");
 		NSData *bar = [NSData dataWithBytesNoCopy: curFile->contents
 										   length: curFile->content_length
@@ -859,9 +862,29 @@ distanceAction: (id)sender
 			foo = [[NSString alloc] initWithData: bar
 										encoding: NSASCIIStringEncoding];
 		}
+
 		[fileContentView setString: foo];
 		fprintf(debug_log, "setStringValue done\n");
 		[fileContentView setRichText: YES];
+
+		NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
+		NSString *displayFontName = [defs stringForKey: @"displayFont"];
+		CGFloat displayFontPointSize = [defs floatForKey: @"displayFontPointSize"];
+		
+		if (displayFontName != nil && displayFontPointSize != 0) {
+			NSFont *font = [NSFont fontWithName: displayFontName
+										   size: displayFontPointSize];
+
+			printf("default font set to: %s %lf (is %snil).\n",
+				   [displayFontName UTF8String], displayFontPointSize,
+				   font == nil ? "" : "not ");
+			
+			[fileContentView setFont: font
+							   range: NSMakeRange(0, [foo length])];
+		} else {
+			printf("default font not set.\n");
+		}
+
 		[self highlightMatchesAt: mz status: YES];
 		haveContents = true;
 	}
@@ -1263,6 +1286,49 @@ distanceAction: (id)sender
 {
 	initialized = YES;
 	[GoferAppDelegate newTopUI: [notification object]];
+}
+
+- (void)startSelectingFont
+{
+	NSFontManager *fontManager = [NSFontManager sharedFontManager];
+	fontManager.target = self;
+	[fontManager setSelectedFont: [[fileContentView textStorage] font] isMultiple: NO];
+	[fontManager orderFrontFontPanel: self];
+}
+
+- (void)changeFont:(id)sender
+{
+	NSFont *font = [sender convertFont: [[fileContentView textStorage] font]];
+	NSString *fontName = [font displayName];
+	CGFloat pointSize = [font pointSize];
+	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
+
+	printf("changefont called: %s %lf.\n", [fontName UTF8String], pointSize);
+
+	[defs setObject: fontName forKey: @"displayFont"];
+	[defs setFloat: pointSize forKey: @"displayFontPointSize"];
+	[[fileContentView textStorage] setFont: font];
+}
+
+- (void)textViewDidChangeSelection:(NSNotification *)notification
+{
+	int i;
+	for (i = 0; i < fileContentView.selectedRanges.count; i++) {
+		NSValue *v = fileContentView.selectedRanges[i];
+		NSRange r = [v rangeValue];
+		if (r.length == 0)
+			continue;
+		// The buffer may contain unicode, but we want the byte offset into
+		// the UTF8, not the character offset into the unicode, so we do this
+		// horribly inefficient hack to get it.   Could optimize, but this
+		// shouldn't happen very often, and text files are small.
+		unsigned long offset =
+			strlen([[[fileContentView string]
+						substringWithRange: NSMakeRange(0, r.location)] UTF8String]);
+		printf("Selection added: %s at %d %d\n",
+			   [[[fileContentView string] substringWithRange: r] UTF8String],
+			   offset, r.location);
+	}
 }
 
 @end
