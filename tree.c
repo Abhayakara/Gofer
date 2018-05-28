@@ -181,15 +181,12 @@ process_file(const char *filename, char *contents, off_t len,
 	}
   
 	// If the file is unicode, we need to do fixups.
-	// Any comparisons against file contents have to happen before these
-	// fixups have been done.
 	if (is_unicode(contents, len))
 	{
 		unicode_fixups(contents, len, terms, n);
 	}
 
 	/* Combine common terms. */
-	// XXX is there a reason why this WAS before unicode_fixups()?
 	combine(&copy, contents, len, exact);
   
 	/* Evaluate nearness expressions */

@@ -247,14 +247,6 @@ flatten_search_terms(search_term_t *terms, int *n, st_expr_t *expr)
 		 * need to search the file for matches--we just exclude anything that
 		 * matches the RHS.
 		 */
-		/*
-		 * XXX think about how this is going to work if we have an
-		 * expression like (near (but-not (match A B C) (match D)) (match F G H))
-		 */
-		/*
-		 * I think it works correctly, because flatten_search_terms will have
-		 * found all of those match terms.
-		 */
     case ste_not:
 		flatten_search_terms(terms, n, expr->subexpr.exprs[0]);
 		break;
