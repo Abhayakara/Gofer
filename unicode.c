@@ -115,12 +115,12 @@ uclen(char *contents, off_t len, off_t start, off_t hunklen)
 static int
 compare_points(const void *ap, const void *bp)
 {
-	const match_entry_t *a = ap;
-	const match_entry_t *b = bp;
+	match_entry_t * const *a = ap;
+	match_entry_t * const *b = bp;
 
-	if (a->offset < b->offset)
+	if ((*a)->offset < (*b)->offset)
 		return -1;
-	else if (b->offset < a->offset)
+	else if ((*b)->offset < (*a)->offset)
 		return 1;
 	else
 		return 0;
@@ -204,12 +204,14 @@ unicode_fixups(char *contents, off_t len, search_term_t *st, int nterms)
 			if (bp > len)
 				gofer_fatal("coding error 2 in unicode_fixups");
 		}
+		// This would happen if the sort didn't work.
 		if (i < num_points && bp + cplen > points[i]->offset)
 			gofer_fatal("coding error 3 in unicode_fixups");
 		bp = bp + cplen;
 		up++;
 	}
 
+	// This would probably also happen if the sort didn't work.
 	if (i < num_points)
 		gofer_fatal("coding error 4 in unicode_fixups.");
 	free(points);
