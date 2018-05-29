@@ -144,6 +144,7 @@ int searchfile(const char *filename, search_term_t *terms, int nterms,
 			   const char *file, off_t flen, st_match_type_t exact);
 void new_st_matchbuf(search_term_t *st);
 int cmp(const char *a, const char *b, size_t len, const char *limit);
+int cmp_exact(const char *a, const char *b, size_t len, const char *limit);
 int casecmp(const char *a, const char *b, size_t len, const char *limit);
 	
 

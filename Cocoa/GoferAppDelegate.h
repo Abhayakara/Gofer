@@ -29,24 +29,10 @@
 
 @interface GoferAppDelegate : NSObject <NSApplicationDelegate> {
 @private
-	NSMenuItem *separatorMark;
-	NSMenuItem *winMenu1;
-	NSMenuItem *winMenu2;
-	NSMenuItem *winMenu3;
-	NSMenuItem *winMenu4;
-	NSMenuItem *winMenu5;
-	NSMenuItem *winMenu6;
-	NSMenuItem *winMenu7;
-	NSMenuItem *winMenu8;
-	NSMenuItem *winMenu9;
-	NSArray *winMenus;
-	NSMenu *winMenu;
-	NSFont *displayFont;
+
 }
 
 @property NSArray *winMenus;
-
-@property(retain) NSFontManager *displayFont;
 
 @property(retain) IBOutlet NSMenu *winMenu;
 @property(retain) IBOutlet NSMenuItem *separatorMark;
@@ -68,7 +54,7 @@
 - (IBAction)prevMatch: (id)sender;
 - (IBAction)close: (id)sender;
 - (IBAction)fontClicked:(id)sender;
-- (void)changeFont:(id)sender;
+- (IBAction)reportClicked:(id)sender;
 
 @end
 

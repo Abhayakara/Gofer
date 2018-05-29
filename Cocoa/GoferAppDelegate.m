@@ -222,8 +222,6 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	[super awakeFromNib];
 
-	displayFont = [NSFont boldSystemFontOfSize:12];
-
 	if (!uis_setup)
     {
 		uis = [NSMutableArray new];
@@ -300,6 +298,15 @@ applicationDidFinishLaunching:(NSNotification *)aNotification
 		}
     }
 }
+
+- (IBAction)reportClicked:(id)sender
+{
+	printf("reportClicked...\n");
+	if (topUI != nil) {
+		[topUI startMakingReport];
+	}
+}
+
 
 @end
 

@@ -25,6 +25,7 @@
 
 #import "GoferAppDelegate.h"
 #import "GoferUI.h"
+#import "ReportUI.h"
 #import "st.h"
 #import "filelist.h"
 #import <sys/time.h>
@@ -102,6 +103,12 @@
 	return self;
 }
 
+- (IBAction)showWindow: (id)sender
+{
+	[super showWindow: sender];
+	printf("showWindow\n");
+}
+
 - (void)windowDidLoad
 {
 	printf("windowDidLoad\n");
@@ -167,16 +174,16 @@
 
 	printf("wakeFromNib...\n");
 
-	[[self window] setTitle: @"Gofer 20180527c"];
+	[[self window] setTitle: @"Gofer 20180529a"];
 	[dirTable registerForDraggedTypes:
 			 [NSArray arrayWithObject: NSPasteboardTypeString]];
 
-	checkboxColumn = [dirTable tableColumnWithIdentifier: @"checked"];
+	self.checkboxColumn = [dirTable tableColumnWithIdentifier: @"checked"];
 	NSButtonCell *buttonColumn = [NSButtonCell new];
 	[buttonColumn setButtonType: NSSwitchButton];
 	[buttonColumn setTitle: @""];
-	[checkboxColumn setDataCell: buttonColumn];
-	dirnameColumn = [dirTable tableColumnWithIdentifier: @"dirname"];
+	[self.checkboxColumn setDataCell: buttonColumn];
+	self.dirnameColumn = [dirTable tableColumnWithIdentifier: @"dirname"];
 
 	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
 	NSArray *dirNamesDef = [defs arrayForKey: @"dirNames"];
@@ -760,16 +767,16 @@ distanceAction: (id)sender
   
 	if (row < 0 || row >= [dirNames count])
 	{
-		if (column == dirnameColumn)
+		if (column == self.dirnameColumn)
 			rv = @"weirdness";
 		else
 			rv = [[NSNumber alloc] initWithBool: NO];
 	}
 	else
 	{
-		if (column == dirnameColumn)
+		if (column == self.dirnameColumn)
 			rv = [dirNames objectAtIndex: row];
-		else if (column == checkboxColumn)
+		else if (column == self.checkboxColumn)
 			rv = [dirsChecked objectAtIndex: row];
 		else
 			rv = @"weirdness";
@@ -786,16 +793,16 @@ distanceAction: (id)sender
 	{
 		if (row < [dirNames count])
 		{
-			if (column == dirnameColumn)
+			if (column == self.dirnameColumn)
 				[dirNames replaceObjectAtIndex: row withObject: obj];
-			else if (column == checkboxColumn)
+			else if (column == self.checkboxColumn)
 				[dirsChecked replaceObjectAtIndex: row withObject: obj];
 		}
 		else if (row == [dirNames count])
 		{
-			if (column == dirnameColumn)
+			if (column == self.dirnameColumn)
 				[dirNames addObject: obj];
-			else if (column == checkboxColumn)
+			else if (column == self.checkboxColumn)
 				[dirsChecked addObject: obj];
 		}
 	}
@@ -1097,13 +1104,13 @@ distanceAction: (id)sender
 	curFile = files->files[files->cur_file];
 
 	// If there's a next file or a next zone, Next Match should be enabled.
-	if (curFile->curzone + 1 >= curFile->nzones ||
-		files->cur_file + 1 <= files->nfiles)
+	if (curFile != NULL && (curFile->curzone + 1 >= curFile->nzones ||
+							files->cur_file + 1 <= files->nfiles))
 		[nextMatchButton setEnabled: YES];
 	else
 		[nextMatchButton setEnabled: NO];
 
-	if (curFile->curzone > 0 || files->cur_file > 0)
+	if (curFile != NULL && (curFile->curzone > 0 || files->cur_file > 0))
 		[prevMatchButton setEnabled: YES];
 	else
 		[prevMatchButton setEnabled: NO];
@@ -1325,10 +1332,25 @@ distanceAction: (id)sender
 		unsigned long offset =
 			strlen([[[fileContentView string]
 						substringWithRange: NSMakeRange(0, r.location)] UTF8String]);
-		printf("Selection added: %s at %d %d\n",
+		printf("Selection added: %s at %lu %lu\n",
 			   [[[fileContentView string] substringWithRange: r] UTF8String],
 			   offset, r.location);
 	}
+}
+
+- (void)startMakingReport {
+	printf("startMakingReport\n");
+	// If we don't have an active report, make one.
+	if (self.activeReport == nil) {
+		self.activeReport = [[ReportUI alloc] init];
+		[self.activeReport setAssociatedUI: self];
+		NSWindow *win = [self.activeReport window];
+		printf("Window: %p\n", win);
+		[win setExcludedFromWindowsMenu: YES];
+		[win makeKeyAndOrderFront: self];
+	}
+	[self.activeReport addReportStanza: @"foo"];
+	printf("done with startMakingReport\n");
 }
 
 @end

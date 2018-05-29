@@ -28,60 +28,12 @@
 #import "filelist.h"
 #import "GoferAppDelegate.h"
 
+@class ReportUI;
+
 @interface GoferUI : NSWindowController <NSTableViewDataSource,
 										 NSTabViewDelegate, NSTextViewDelegate>
 {
 @private
-	NSWindow *win;
-
-	NSTextField *inputBox0;
-	NSTextField *inputBox1;
-	NSTextField *inputBox2;
-	NSTextField *inputBox3;
-	NSTextField *inputBox4;
-	NSTextField *inputBox5;
-	NSTextField *inputBox6;
-	NSTextField *inputBox7;
-  
-	NSPopUpButton *distancePopUp;
-	NSTextField *distanceBox;
-	NSMenu *distanceMenu;
-	NSMenuItem *orMenuItem;
-	NSMenuItem *andMenuItem;
-	NSMenuItem *notMenuItem;
-	NSMenuItem *distanceMenuItem;
-	NSMenu *precisionMenu;
-	NSPopUpButton *precisionPopUp;
-	NSMenuItem *ignoreSpaceCap;
-	NSMenuItem *ignoreSpace;
-	NSMenuItem *ignoreNothing;
-  
-	NSTextField *equationField;
-	NSTableView *dirTable;
-	NSTableColumn *checkboxColumn;
-	NSTableColumn *dirnameColumn;
-  
-	NSMutableArray *dirNames;
-	NSMutableArray *dirsChecked;
-
-	NSTabView *tabView;
-	NSTabViewItem *searchSettingTab;
-	NSTabViewItem *savedSearchTab;
-	NSTabViewItem *searchResultsTab;
-	NSButton *nextMatchButton;
-	NSButton *nextFileMatchButton;
-	NSButton *prevMatchButton;
-	NSButton *prevFileMatchButton;
-	NSButton *stopButton;
-	NSButton *findButton;
-	NSMenuItem *findMenuItem;
-	NSMenuItem *findNextMenuItem;
-	NSMenuItem *findPreviousMenuItem;
-
-	NSTextView *fileContentView;
-	NSTextField *viewFile;
-	NSTextField *statusMessageField;
-
 	BOOL searching;
 	BOOL keepSearching;
 	BOOL firstMatch;
@@ -144,6 +96,8 @@
 @property(retain) IBOutlet NSMenuItem *ignoreNothing;
 
 @property(retain) IBOutlet NSTextField *equationField;
+@property(retain) IBOutlet NSTableColumn *checkboxColumn;
+@property(retain) IBOutlet NSTableColumn *dirnameColumn;
 
 @property(retain) IBOutlet NSTableView *dirTable;
 
@@ -161,6 +115,8 @@
 @property(retain) IBOutlet NSTextView *fileContentView;
 @property(retain) IBOutlet NSTextField *viewFile;
 @property(retain) IBOutlet NSTextField *statusMessageField;
+
+@property(retain) ReportUI *activeReport;
 
 - (filelist_t *)files;
 - (void)newMatch;
@@ -209,6 +165,7 @@
 
 - (void)startSelectingFont;
 - (void)changeFont:(id)sender;
+- (void)startMakingReport;
 
 @end
 

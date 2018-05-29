@@ -46,6 +46,7 @@ int
 cmp(const char *a, const char *b, size_t len, const char *limit)
 {
 	const char *search_start = b;
+
 	while (len)
 	{
 		/* If we hit a space in the comparison string, let that space match
@@ -79,10 +80,11 @@ cmp(const char *a, const char *b, size_t len, const char *limit)
 	return (int)(b - search_start);
 }
 
-static int
+int
 cmp_exact(const char *a, const char *b, size_t len, const char *limit)
 {
 	const char *search_start = b;
+
 	while (len)
 	{
 		if (*a != *b)
@@ -98,6 +100,9 @@ int
 casecmp(const char *a, const char *b, size_t len, const char *limit)
 {
     const char *search_start = b;
+	const char *pattern_start = a;
+	off_t mo = 0;
+
     while (len)
 	{
 		/* If we hit a space in the comparison string, let that space match
@@ -150,6 +155,12 @@ casecmp(const char *a, const char *b, size_t len, const char *limit)
 					else
 						break;
 				}
+				// If there's a space at the beginning of the pattern and
+				// it matches a big hunk of skippable stuff, we don't want
+				// to highlight all of it.
+				if (a == pattern_start) {
+					mo = b - search_start;
+				}
 				++b;
 			}
 			/* If there's no longer space, we can't do a match. */
@@ -174,6 +185,8 @@ casecmp(const char *a, const char *b, size_t len, const char *limit)
 		++a; --len;
 	}
 //    printf("match: |%.*s|\n", (int)(b - search_start), search_start);
+	if (mo > 0)
+		return 0;
     return (int)(b - search_start);
 }
 

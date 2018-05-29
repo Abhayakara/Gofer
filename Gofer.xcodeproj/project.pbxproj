@@ -33,6 +33,8 @@
 		DF7553FF136DE8BB00DDF1FE /* GoferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7553FE136DE8BB00DDF1FE /* GoferTests.m */; };
 		DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */ = {isa = PBXBuildFile; fileRef = DF755408136DEA7000DDF1FE /* Gofer.icns */; };
 		DF9CEC2A20BA1A4D0022C685 /* not.c in Sources */ = {isa = PBXBuildFile; fileRef = DF9CEC2920BA1A4D0022C685 /* not.c */; };
+		DF9CEC3820BD9E490022C685 /* ReportUI.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9CEC3620BD9E490022C685 /* ReportUI.m */; };
+		DF9CEC3920BD9E490022C685 /* ReportUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF9CEC3720BD9E490022C685 /* ReportUI.xib */; };
 		DFD6477F16D5CA1B00016AAE /* WinDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD6477E16D5CA1B00016AAE /* WinDelegate.m */; };
 		DFFBC798195FB201007412CF /* GoferUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFFBC797195FB201007412CF /* GoferUI.xib */; };
 /* End PBXBuildFile section */
@@ -85,6 +87,9 @@
 		DF7553FE136DE8BB00DDF1FE /* GoferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoferTests.m; sourceTree = "<group>"; };
 		DF755408136DEA7000DDF1FE /* Gofer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Gofer.icns; sourceTree = "<group>"; };
 		DF9CEC2920BA1A4D0022C685 /* not.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = not.c; sourceTree = SOURCE_ROOT; };
+		DF9CEC3520BD9E490022C685 /* ReportUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReportUI.h; sourceTree = "<group>"; };
+		DF9CEC3620BD9E490022C685 /* ReportUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReportUI.m; sourceTree = "<group>"; };
+		DF9CEC3720BD9E490022C685 /* ReportUI.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReportUI.xib; sourceTree = "<group>"; };
 		DFD6477D16D5CA1B00016AAE /* WinDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinDelegate.h; sourceTree = "<group>"; };
 		DFD6477E16D5CA1B00016AAE /* WinDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WinDelegate.m; sourceTree = "<group>"; };
 		DFFBC797195FB201007412CF /* GoferUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GoferUI.xib; sourceTree = "<group>"; };
@@ -150,6 +155,9 @@
 				DF4E91FF13AD2A1D007F3E0F /* GoferAppDelegate.m */,
 				DF4E920013AD2A1D007F3E0F /* main.m */,
 				DFFBC797195FB201007412CF /* GoferUI.xib */,
+				DF9CEC3520BD9E490022C685 /* ReportUI.h */,
+				DF9CEC3620BD9E490022C685 /* ReportUI.m */,
+				DF9CEC3720BD9E490022C685 /* ReportUI.xib */,
 			);
 			path = Cocoa;
 			sourceTree = SOURCE_ROOT;
@@ -293,6 +301,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF9CEC3920BD9E490022C685 /* ReportUI.xib in Resources */,
 				DF0B1DE52088047000B53C1A /* (null) in Resources */,
 				DF755409136DEA7000DDF1FE /* Gofer.icns in Resources */,
 				DFFBC798195FB201007412CF /* GoferUI.xib in Resources */,
@@ -349,6 +358,7 @@
 				DF57EBD416D2F0FC00E09039 /* GoferUI.m in Sources */,
 				DFD6477F16D5CA1B00016AAE /* WinDelegate.m in Sources */,
 				DF19A8D1172D7B89005BC075 /* GoferWindow.m in Sources */,
+				DF9CEC3820BD9E490022C685 /* ReportUI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

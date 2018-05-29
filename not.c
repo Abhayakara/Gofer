@@ -37,46 +37,61 @@ term_exclude(match_entry_t *m, char *content,  off_t len, search_term_t *term,
 			 st_match_type_t exact)
 {
 	int i;
+	int (*comparator)(const char *a, const char *b, size_t len, const char *limit);
+
+	if (exact == match_exactly) {
+		comparator = cmp_exact;
+	} else if (exact == match_ignores_spaces) {
+		comparator = cmp;
+	} else {
+		comparator = casecmp;
+	}
 	
 	// The algorithm is to notice whether the current match contains the end of
 	// the current exclusion term.   If it does, then backtrack and see if it
 	// also contains the beginning of the exclusion term.
 
 	// looking for "YEM PA" NEAR "DGOS PA"
-	// match: "G.|YEM PA"  (| is where the match starts)
-	// exclude: "G.YEM"
+	// match: "G-|YEM PA"  (| is where the match starts)
+	// exclude: "G-YEM"
 	// result: excluded (backtrack matched)
 	// match: " |YEM PA"
-	// exclude: "G.YEM"
+	// exclude: "G-YEM"
 	// result: not excluded (backtrack didn't match)
 	// match: " |DGOS PA"
 	// exclude: "G.YEM"
 	// result: not excluded (backtrack didn't happen)
 
+	// looking for " ZHES"
+	// exclude: "zhes dang"
+	// match: ",ZHES DANG"
+	// 
+
 	// What about (match "MMMMM|MM" "MMMMMM"
+
+	// See if the template is a substring of the match
+	for (i = 0; i < m->length; i++) {
+		if (m->length + i > len) {
+			break;
+		}
+		if (comparator(&term->buf[0], content + m->offset + i, 
+					   term->len, content + len)) {
+			return 1;
+		}
+	}
 
 	// Look for a match with a substring of the exclude term
 	for (i = 0; i < term->len; i++) {
 		// If in order to get a successful submatch we have to go off the end of
 		// the string, the term definitely doesn't match.
 		if (m->offset + term->len - i <= len) {
-			if (exact == match_exactly) {
-				if (!memcmp(content + m->offset, &term->buf[i], term->len - i)) {
+			if (comparator(&term->buf[i], content + m->offset, 
+						   term->len - i, content + len)) {
 					break;
-				}
-			} else if (exact == match_ignores_spaces) {
-				if (cmp(content + m->offset, &term->buf[i],
-						 term->len - i, &term->buf[term->len])) {
-					break;
-				}
-			} else {
-				if (casecmp(content + m->offset, &term->buf[i],
-							 term->len - i, &term->buf[term->len])) {
-					break;
-				}
 			}				
 		}
 	}
+
 	// Didn't match...
 	if (i == term->len)
 		return 0;
@@ -90,20 +105,9 @@ term_exclude(match_entry_t *m, char *content,  off_t len, search_term_t *term,
 
 	// The offset of the suffix in the search term tells us where in the search buffer
 	// to look for the match.
-	if (exact == match_exactly) {
-		if (!memcmp(content + m->offset - i, &term->buf[0], term->len)) {
-			return 1;
-		}
-	} else if (exact == match_ignores_spaces) {
-		if (cmp(content + m->offset - i, &term->buf[0], 
-				term->len, &term->buf[term->len])) {
-			return 1;
-		}
-	} else {
-		if (casecmp(content + m->offset - i, &term->buf[0],
-					term->len, &term->buf[term->len])) {
-			return 1;
-		}
+	if (comparator(&term->buf[0], content + m->offset - i,
+				   term->len, content + len)) {
+		return 1;
 	}				
 	return 0;
 }
@@ -116,7 +120,7 @@ static int
 match_exclude(match_entry_t *m, char *content,  off_t len, st_expr_t *expr,
 			  st_match_type_t exact)
 {
-	int lhs, rhs;
+	int lhs;
 	
 	switch(expr->type) {
     case ste_not:
@@ -129,13 +133,15 @@ match_exclude(match_entry_t *m, char *content,  off_t len, st_expr_t *expr,
 
     case ste_and:
 		lhs = match_exclude(m, content, len, expr->subexpr.exprs[0], exact);
-		rhs = match_exclude(m, content, len, expr->subexpr.exprs[1], exact);
-		return lhs && rhs;
+		if (!lhs)
+			return 0;
+		return match_exclude(m, content, len, expr->subexpr.exprs[1], exact);
 
     case ste_or:
 		lhs = match_exclude(m, content, len, expr->subexpr.exprs[0], exact);
-		rhs = match_exclude(m, content, len, expr->subexpr.exprs[1], exact);
-		return lhs || rhs;
+		if (lhs)
+			return 1;
+		return match_exclude(m, content, len, expr->subexpr.exprs[1], exact);
 
     case ste_term:
 		return term_exclude(m, content, len, expr->subexpr.term, exact);
